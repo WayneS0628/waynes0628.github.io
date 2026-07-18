@@ -176,7 +176,7 @@ mailchimp:
 #-------------------------------
 # Contact Settings
 contact:
-  email: https://formspree.io/f/xaqrowqy # Add your form_id
+  email: xaqrowqy # Add your form_id
   description: Lets Chat! # Add a description of your form
 
 # NOTE
