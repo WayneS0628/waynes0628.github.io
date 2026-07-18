@@ -1,32 +1,26 @@
 ---
 layout: page
 title: About Me
-description: I am an expert user experience strategist and mobile developer, driven by a relentless pursuit of innovation and excellence. My journey in the tech world has been shaped by a commitment to creating solutions that not only meet but exceed user expectations.
+description: Senior CS student at Queens College (CUNY), Break Through Tech AI fellow, and aspiring ML engineer with a long-term goal of making in impact with my work.
 permalink: /about/
-image: '/images/01.jpg'
+image: '/images/01-1.jpg'
 ---
-As a user experience strategist, I specialize in understanding the intricacies of user behavior and translating them into intuitive and enjoyable digital interfaces. My approach is rooted in empathy, ensuring that every design decision considers the end-user's perspective.
+I'm a senior Computer Science student at Queens College (CUNY) focused on machine learning and software engineering. I'm drawn to the part of AI where research meets reality and where models stop being experiments and start solving actual problems.
 
-## Mobile development maven
+## What I'm working on
 
-In the realm of mobile development, I thrive on turning ideas into functional and aesthetically pleasing applications. From concept to deployment, I am dedicated to delivering mobile solutions that seamlessly integrate with users' lives.
+I apart of the Break Through Tech AI program 2026–2027 cohort, where I've be working on Machine Learning Foundations and applied ML projects with industry partners. Outside of that, I'm building out my portfolio with projects in NLP, data science, and full-stack development and also working toward a career in ML engineering.
 
-> To design is to communicate clearly by whatever means you can control or master - Milton Glaser
+## Beyond the code
 
-In the realm of mobile development, I thrive on turning ideas into functional and aesthetically pleasing applications. From concept to deployment, I am dedicated to delivering mobile solutions that seamlessly integrate with users' lives.
+I work part-time at Apple and serve as a Resident Advisor at Summit Apartments, which keeps me sharp in ways a CS curriculum doesn't always cover such as communication, accountability, being the person people come to when things go sideways.
 
-<div class="gallery-box">
-  <div class="gallery">
-    <img src="/images/01-2.jpg" loading="lazy" alt="Author">
-    <img src="/images/01-3.jpg" loading="lazy" alt="Author">
-  </div>
-  <em>Photo by <a href="https://www.pexels.com/@david-garrison-1128051/" target="_blank">David Garrison</a> on <a href="https://www.pexels.com/" target="_blank">Pexels</a></em>
-</div>
+When I'm not at a keyboard, you can catch me at the gym, gaming, watching youtube videos, playing my guitar, or deep in a playlist. Non-career related goals? Get a cool motorcycle, travel to Ethiopia, collect cool art, and learn to do a backflip.
 
-I believe in the power of technology to enrich lives. Whether it's through creating captivating mobile apps or designing user-centric interfaces, I aim to make a positive impact on how people engage with the digital world.
+## The long game
 
-## Let's Create Together
+I'm not just trying to land a job; I'm trying to build something. The goal is ML engineering so that I can quietly make an impact with my work on the world.
 
-Whether you're looking to enhance the user experience of your digital platform or bring a groundbreaking mobile app to life, I'm here to collaborate and innovate. Let's embark on a journey to transform ideas into exceptional digital experiences.
+## Let's connect
 
-Feel free to reach out, and let's turn your vision into a digital reality!
+If you're working on something interesting or want to talk tech, I'm always open to connecting. Reach out through the contact page or connect with me on Linkedin!
