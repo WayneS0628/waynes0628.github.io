@@ -1,70 +1,55 @@
-# Gerous – Modern Portfolio Jekyll Theme
+# waynesimmonsjr.com
 
-Gerous is a modern portfolio theme for Jekyll, designed for creative individuals and professionals. Boost your online visibility with this stylish theme, featuring a premium design and excellent performance, as reflected in its high Lighthouse Speed score. Showcase your top projects using the built-in slider, and add a touch of sophistication with the dark mode. The theme improves user experience by including dedicated sections for FAQs and Testimonials, creating a comprehensive platform to display your portfolio with both style and functionality.
+My personal portfolio site, built with the [Gerous](https://jekyllthemes.io/theme/gerous-modern-portfolio-jekyll-theme) Jekyll theme by [Artem Sheludko](https://jekyllthemes.io/developers/artem-sheludko). Live at [waynesimmonsjr.com](https://waynesimmonsjr.com).
 
-* * *
+---
 
-### Demo
+## About
 
-Check the theme in action [Live Demo](https://gerous.netlify.app/) |
-[Artem Sheludko](https://jekyllthemes.io/developers/artem-sheludko)
+This repo powers my personal portfolio where I showcase my projects, writing, and background as a CS student and aspiring ML engineer. The site is hosted for free via GitHub Pages and uses a custom domain.
 
-* * *
+The theme is fully interchangeable — if you want to swap it out, just replace the `_layouts/`, `_includes/`, `_sass/`, and `js/` folders with another Jekyll theme and your content (posts, projects, pages) carries over untouched since it lives in `_posts/`, `_projects/`, and `_pages/`.
 
-### Theme features
+---
 
-- Works with GitHub Pages (host it for free)
-- Dark and light mode
-- No jQuery, only vanilla JS
-- 100% responsive design
-- Clean and modern code
-- Super fast performance
-- Optimized for mobile devices
-- Slider featured projects
-- Section projects
-- Section blog
-- Section testimonials
-- Section FAQ
-- Compatible with modern browsers
-- Post navigation
-- Social sharing buttons
-- Syntax highlighting (supports the Jekyll syntax highlighter)
-- Medium style image zoom
-- Image gallery
-- Tag page
-- Custom logo support
-- Supports video posts
-- Supports contact form (Formspree)
-- Supports MailChimp newsletter
-- Supports Disqus comments
-- Supports Google analytics
-- Font Awesome icons
-- Free Google fonts
+## Theme
 
-* * *
+**Gerous** — Modern Portfolio Jekyll Theme  
+- [Live theme demo](https://gerous.netlify.app/)  
+- [Get the theme](https://jekyllthemes.io/theme/gerous-modern-portfolio-jekyll-theme)  
+- Created by [Artem Sheludko](https://jekyllthemes.io/developers/artem-sheludko)
 
-### Installation
+Notable features: dark/light mode, featured project slider, blog, testimonials, FAQ, Disqus comments, Google Analytics, Formspree contact form, and MailChimp newsletter support.
 
-#### Installing Ruby & Jekyll
+---
 
-If this is your first time using Jekyll, please follow the [Jekyll docs](https://jekyllrb.com/docs/installation/) and make sure your local environment (including Ruby) is setup correctly.
+## Running locally
 
-* * *
+Requires Ruby 3.0+ and Bundler.
 
-### Deployment
+```bash
+bundle install
+bundle exec jekyll serve
+```
 
-To run the theme locally, navigate to the theme directory and run `bundle install` to install the dependencies, then run `jekyll serve` or `bundle exec jekyll serve` to start the Jekyll server.
+Site runs at `http://localhost:4000`.
 
-I would recommend checking the [Deployment Methods](https://jekyllrb.com/docs/deployment-methods/) page on Jekyll website.
+---
 
-* * *
+## Structure
 
-### Documentation
+| Path | What it is |
+|---|---|
+| `_config.yml` | Build settings |
+| `_data/settings.yml` | All site content and toggles |
+| `_posts/` | Blog posts |
+| `_projects/` | Portfolio projects |
+| `_pages/` | Static pages (About, Contact, etc.) |
+| `_sass/0-settings/color-scheme.scss` | Colors |
+| `images/` | All images |
 
-Before using the Gerous theme, please read the attached documentation.
+---
 
-* * *
+## License
 
-### Support
-
-<p>If you have any questions or feedback about the theme, please feel free to contact me by mail <a href="mailto:hi.artemsheludko@gmail.com">Contact</a><p>
+Theme licensed under MIT by Artem Sheludko. All site content © Wayne Simmons Jr.
