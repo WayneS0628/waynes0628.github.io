@@ -38,12 +38,10 @@ Before targeted questions, a pairplot across the numeric features as a quick sca
 The two strongest survival factors, viewed from three angles: raw counts, rates side by side, and a rate scoreboard. Women in first class survived at roughly 95% while men in third class survived at roughly 15%. Nothing else in the dataset comes close to that gap. The stacked counts also show that women out-survived men despite being outnumbered on board.
 
 <div class="gallery-box">
-  <div class="gallery">
+  <div class="gallery" style="display:grid; grid-template-columns:1fr; gap:12px;">
     <img src="/images/01-project_titanic_sex_counts.png" loading="lazy" alt="Survival counts by sex">
   </div>
-</div>
-<div class="gallery-box">
-  <div class="gallery">
+  <div class="gallery" style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:12px;">
     <img src="/images/01-project_titanic_class_sex.png" loading="lazy" alt="Survival rate by class and sex">
     <img src="/images/01-project_titanic_heatmap.png" loading="lazy" alt="Survival rate heatmap by class and sex">
   </div>
@@ -79,20 +77,14 @@ My favorite thread of the project. Passengers who boarded at Cherbourg, France s
 After controlling for class, most of Cherbourg's advantage disappeared, though a residual gap remained, most visibly in third class. One more honest caveat: Queenstown's upper-class estimates have huge error bars because almost nobody from Queenstown traveled first or second class.
 
 <div class="gallery-box">
-  <div class="gallery">
+  <div class="gallery" style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
     <img src="/images/01-project_titanic_port_survival.png" loading="lazy" alt="Survival rate by embarkation port">
     <img src="/images/01-project_titanic_port_counts.png" loading="lazy" alt="Survival counts by embarkation port">
   </div>
-</div>
-
-<div class="gallery-box">
-  <div class="gallery">
+  <div class="gallery" style="display:grid; grid-template-columns:1fr; gap:12px; margin-top:12px;">
     <img src="/images/01-project_titanic_port_sex.png" loading="lazy" alt="Survival rate by port and sex">
   </div>
-</div>
-
-<div class="gallery-box">
-  <div class="gallery">
+  <div class="gallery" style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:12px;">
     <img src="/images/01-project_titanic_port_composition.png" loading="lazy" alt="Class composition by embarkation port">
     <img src="/images/01-project_titanic_port_class.png" loading="lazy" alt="Survival by class and embarkation port">
   </div>
