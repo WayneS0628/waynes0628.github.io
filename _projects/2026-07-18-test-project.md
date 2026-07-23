@@ -3,7 +3,7 @@ title: Test Project
 date: 2026-07-18 
 label: Development
 image: '/images/testproject.jpg'
-featured: true
+featured: false
 ---
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean in nisi mollis, volutpat risus mattis, ornare orci. Cras quis lobortis lectus. Donec sit amet sem nibh. Mauris ac ipsum vitae velit commodo sodales. Vivamus dictum, magna eget tempus elementum, metus elit efficitur ex, eu dapibus turpis risus eget eros.
 
