@@ -40,6 +40,10 @@ The two strongest survival factors, viewed from three angles: raw counts, rates 
 <div class="gallery-box">
   <div class="gallery">
     <img src="/images/01-project_titanic_sex_counts.png" loading="lazy" alt="Survival counts by sex">
+  </div>
+</div>
+<div class="gallery-box">
+  <div class="gallery">
     <img src="/images/01-project_titanic_class_sex.png" loading="lazy" alt="Survival rate by class and sex">
     <img src="/images/01-project_titanic_heatmap.png" loading="lazy" alt="Survival rate heatmap by class and sex">
   </div>
@@ -78,6 +82,11 @@ After controlling for class, most of Cherbourg's advantage disappeared, though a
   <div class="gallery">
     <img src="/images/01-project_titanic_port_survival.png" loading="lazy" alt="Survival rate by embarkation port">
     <img src="/images/01-project_titanic_port_counts.png" loading="lazy" alt="Survival counts by embarkation port">
+  </div>
+</div>
+
+<div class="gallery-box">
+  <div class="gallery">
     <img src="/images/01-project_titanic_port_sex.png" loading="lazy" alt="Survival rate by port and sex">
   </div>
 </div>
