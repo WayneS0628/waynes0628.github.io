@@ -68,6 +68,18 @@
               <div class="toggle-sun" title="Enable light mode"><i class="ion ion-ios-sunny" aria-hidden="true"></i></div>
             </div>
             {% endif %}
+
+            {% if site.data.settings.social %}
+            <div class="nav-social">
+              {% for social in site.data.settings.social %}
+              <a class="nav-social__link" href="{{ social.link }}" target="_blank" rel="noopener" aria-label="{{ social.name }} profile">
+                <i class="{{ social.icon }}" aria-hidden="true"></i>
+                <span>{{ social.name }}</span>
+              </a>
+              {% endfor %}
+            </div>
+            {% endif %}
+
             {% if site.data.settings.cta_button.enable == true %}
             <a href="{% if site.data.settings.cta_button.cta_button_link %}{{ site.data.settings.cta_button.cta_button_link }}{% else %}#{% endif %}" class="button cta-button">{{ site.data.settings.cta_button.cta_button_text }}</a>
             {% endif %}

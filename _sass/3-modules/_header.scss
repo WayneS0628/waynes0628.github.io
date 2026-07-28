@@ -304,6 +304,48 @@
   }
 }
 
+/* Social buttons (LinkedIn / GitHub) */
+.nav-social {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: 32px;
+
+  &__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 18px;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1.6;
+    text-decoration: none;
+    color: var(--heading-font-color);
+    border: 1px solid var(--border-color);
+    border-radius: 60px;
+    transition: $global-transition;
+
+    i {
+      font-size: 18px;
+    }
+
+    &:hover {
+      color: var(--primary-color);
+      border-color: var(--primary-color);
+    }
+  }
+
+  @media (max-width: $desktop) {
+    margin-top: 14px;
+    margin-left: 0;
+    gap: 10px;
+
+    .nav-social__link {
+      padding: 5px 15px;
+    }
+  }
+}
+
 /* Toggle Theme */
 .toggle-theme {
   line-height: 1;
