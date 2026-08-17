@@ -1,7 +1,7 @@
 ---
 title: Decision Tree vs Neural Network
 date: 2026-08-16
-label: Data Science
+label: Machine Learning
 image: '/images/02-project_Main.png'
 featured: true
 ---

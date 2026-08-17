@@ -1,7 +1,7 @@
 ---
 title: Would You Have Survived the Titanic?
 date: 2026-08-17
-label: Data Science
+label: Machine Learning
 image: '/images/03-project_Main.png'
 featured: true
 ---
