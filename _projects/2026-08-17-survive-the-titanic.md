@@ -2,7 +2,7 @@
 title: Would You Have Survived the Titanic?
 date: 2026-08-17
 label: Machine Learning
-image: '/images/03-project_Main.png'
+image: '/images/03-project_Main.jpeg'
 featured: true
 ---
 The last two Titanic projects lived entirely in notebooks: exploratory analysis, then a full model comparison. This one takes the winning model out of the notebook entirely and puts it in front of anyone who wants to try it, no code, no setup, just answer a few questions and get a live prediction.

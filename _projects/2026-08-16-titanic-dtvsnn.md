@@ -2,7 +2,7 @@
 title: Decision Tree vs Neural Network
 date: 2026-08-16
 label: Machine Learning
-image: '/images/02-project_Main.png'
+image: '/images/02-project_Main.jpeg'
 featured: true
 ---
 Is a decision tree or a neural network better at predicting Titanic survival, and is the neural network's added complexity actually worth it? This project takes both models through the full ML life cycle side by side: problem definition, data prep, training, hyperparameter tuning, and head-to-head comparison, then puts the winner in front of a real, unseen holdout by submitting it to Kaggle's official leaderboard.
