@@ -2,7 +2,7 @@
 title: What 114,000 Songs Sound Like
 date: 2026-08-26
 label: Data Science
-image: '/images/04-project_Main.jpeg'
+image: '/images/04-project_Main.png'
 featured: true
 ---
 What does Spotify's catalog actually look like as data? This project explores ~114,000 tracks across 114 genres: how the audio features behave, which relationships between them are real, and which genre stereotypes survive contact with the numbers. It ends in an interactive Streamlit app where you can filter the whole dataset yourself with live charts, sliders for danceability, energy, valence, and tempo, and head-to-head genre comparisons.
