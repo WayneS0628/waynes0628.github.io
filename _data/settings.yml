@@ -133,7 +133,7 @@ author_section:
   enable: true
   author_section_title: "Hi there 👋 ! Welcome to my fun zone. I'm Wayne, the ML engineer in the making."
   author_section_description: When I'm not building models or pushing commits, you can catch me at the gym, gaming, watching youtube videos, playing my guitar, or deep in a playlist. Non-career related goals? Get a cool motorcycle, travel to Ethiopia, collect cool art, and learn to do a backflip. If you're working on something cool or just want to connect, let's talk.
-  author_section_image: "/images/01-1.jpg"
+  author_section_image: "/images/Fun01.JPG"
   author_section_image_alt: Wayne Simmons
   author_section_button_text: Let's сonnect!
   author_section_button_link: "/contact/"
