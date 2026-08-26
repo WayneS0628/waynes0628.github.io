@@ -7,7 +7,7 @@ featured: true
 ---
 What does Spotify's catalog actually look like as data? This project explores ~114,000 tracks across 114 genres: how the audio features behave, which relationships between them are real, and which genre stereotypes survive contact with the numbers. It ends in an interactive Streamlit app where you can filter the whole dataset yourself with live charts, sliders for danceability, energy, valence, and tempo, and head-to-head genre comparisons.
 
-Try it below, or open it directly: [https://waynes0628-spotify-tracks-explorer-app-5juveb.streamlit.app/](#)
+Try it below, or open it directly: [Here](https://waynes0628-spotify-tracks-explorer-app-5juveb.streamlit.app)
 
 Full notebook and code: [WayneS0628/spotify-tracks-explorer](https://github.com/WayneS0628/spotify-tracks-explorer)
 
@@ -118,4 +118,4 @@ Every project gets one of these sections, and this dataset earned a long one:
 
 The real work of this project wasn't any chart, it was the grain decision at the top. Deciding what one row represents, and refusing to pick a single answer when the data needed two, shaped everything downstream. Beyond that: median vs mean as a modeling decision rather than a style preference, catching a silently broken chart by looking at it instead of trusting that running code means correct code, and my first project in Plotly after living in matplotlib and seaborn, which turned out to be a much smaller jump than expected.
 
-Try the live explorer: [https://waynes0628-spotify-tracks-explorer-app-5juveb.streamlit.app](#) · Full code: [WayneS0628/spotify-tracks-explorer](https://github.com/WayneS0628/spotify-tracks-explorer)
+Try the live explorer: [Here](https://waynes0628-spotify-tracks-explorer-app-5juveb.streamlit.app) · Full code: [WayneS0628/spotify-tracks-explorer](https://github.com/WayneS0628/spotify-tracks-explorer)
