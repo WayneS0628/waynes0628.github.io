@@ -3,7 +3,7 @@ title: Would You Have Survived the Titanic?
 date: 2026-08-17
 label: Machine Learning
 image: '/images/03-project_Main.jpeg'
-featured: true
+featured: false
 ---
 The last two Titanic projects lived entirely in notebooks: exploratory analysis, then a full model comparison. This one takes the winning model out of the notebook entirely and puts it in front of anyone who wants to try it, no code, no setup, just answer a few questions and get a live prediction.
 
@@ -24,7 +24,7 @@ Full app code: [WayneS0628/SurviveTheTitanic](https://github.com/WayneS0628/Surv
 
 ## Where the Model Came From
 
-Nothing gets trained in this app, it's pure inference. The model itself is the neural network that won the [Decision Tree vs Neural Network](/projects/titanic-dtvsnn) comparison, trained on the Kaggle Titanic dataset and evaluated against Kaggle's real leaderboard (0.7608 public score). That project in turn built on the feature choices and cleaning decisions from my original [Titanic EDA](/projects/titanic-eda).
+Nothing gets trained in this app, it's pure inference. The model itself is the neural network that won the [Decision Tree vs Neural Network](/project/titanic-dtvsnn) comparison, trained on the Kaggle Titanic dataset and evaluated against Kaggle's real leaderboard (0.7608 public score). That project in turn built on the feature choices and cleaning decisions from my original [Titanic EDA](/project/titanic-eda).
 
 Three projects, one thread: explore the data, build and compare models on it, then hand the winner to anyone who wants to play with it.
 

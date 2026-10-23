@@ -3,7 +3,7 @@ title: Titanic EDA
 date: 2026-07-23
 label: Data Science
 image: '/images/01-project_Main.png'
-featured: true
+featured: false
 ---
 Who survived the Titanic, and what did survival actually depend on? For my first start-to-finish exploratory data analysis, I took the classic Titanic passenger dataset and worked it from raw load to published findings in a single sprint: cleaning missing data, engineering features, and pulling out the patterns behind who made it off the ship.
 
