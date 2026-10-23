@@ -54,7 +54,7 @@ Sections 1 to 8 below are the original brief, edited where decisions changed. Ho
 - Conversational, direct, not corporate.
 - **Never invent metrics, stats, or results.** Use clearly marked placeholders (`TODO: Wayne`) and list them for Wayne to fill.
 - Never list a glucose spectroscopy project. He did not build it.
-- No project pages for the bigram language model or the MarianMT fine-tune (Wayne's call, 2026-10-23). The bigram line on his resume is fine as is; don't flag it.
+- No project page for the bigram language model (Wayne's call, 2026-10-23). The bigram line on his resume is fine as is; don't flag it.
 
 ## 3. Visual system
 
