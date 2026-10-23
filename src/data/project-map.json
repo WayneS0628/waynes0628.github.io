@@ -1,0 +1,41 @@
+{
+  "model": "Xenova/all-MiniLM-L6-v2",
+  "method": "mean-pooled sentence embeddings, PCA to 2D",
+  "points": [
+    {
+      "id": "claude-rag-chatbot",
+      "x": 0.9,
+      "y": 0.6212,
+      "nearest": "cleantube",
+      "similarity": 0.38
+    },
+    {
+      "id": "cleantube",
+      "x": 0.6175,
+      "y": 0.7749,
+      "nearest": "claude-rag-chatbot",
+      "similarity": 0.38
+    },
+    {
+      "id": "cuad-contract-triage",
+      "x": 0.7007,
+      "y": 0.1,
+      "nearest": "claude-rag-chatbot",
+      "similarity": 0.253
+    },
+    {
+      "id": "spotify-tracks-explorer",
+      "x": 0.1232,
+      "y": 0.8128,
+      "nearest": "cleantube",
+      "similarity": 0.239
+    },
+    {
+      "id": "titanic-dtvsnn",
+      "x": 0.1407,
+      "y": 0.1731,
+      "nearest": "cleantube",
+      "similarity": 0.188
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 ---
 import { getCollection, render } from 'astro:content';
-import { Image } from 'astro:assets';
+import Cover from '../../components/Cover.astro';
 import Base from '../../layouts/Base.astro';
 
 export async function getStaticPaths() {
@@ -19,7 +19,7 @@ const fmt = new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', d
     <p class="label date">{fmt.format(post.data.date)}</p>
     <h1 class="post__title">{post.data.title}</h1>
     <p class="post__summary">{post.data.summary}</p>
-    {post.data.cover && <Image class="post__cover" src={post.data.cover} alt={post.data.coverAlt ?? ''} width={1280} widths={[640, 960, 1280]} sizes="(max-width: 1200px) 100vw, 1120px" />}
+    {post.data.cover && <Cover class="post__cover" src={post.data.cover} alt={post.data.coverAlt ?? ''} eager />}
     <div class="prose post__body">
       <Content />
     </div>

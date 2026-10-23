@@ -1,0 +1,95 @@
+# Pages CMS (https://pagescms.org): a web editor for this repo.
+# Sign in at https://app.pagescms.org with GitHub and open this repository.
+# Every save is a commit to the branch you pick, and main deploys automatically.
+
+media:
+  input: public/uploads
+  output: /uploads
+  categories: [image]
+  rename: safe
+
+content:
+  - name: projects
+    label: Projects
+    type: collection
+    path: src/content/projects
+    filename: "{primary}/index.md"
+    format: yaml-frontmatter
+    subfolders: true
+    view:
+      layout: tree
+      node:
+        filename: index.md
+        hideDirs: others
+      fields: [title, status, featured, date]
+      primary: title
+      sort: date
+      order: desc
+    fields:
+      - { name: title, label: Title, type: string, required: true }
+      - name: summary
+        label: Summary
+        type: text
+        required: true
+        description: One or two sentences. Shown on cards and in search results.
+      - { name: task, label: Task, type: string, required: true, description: "What the model does, e.g. Binary classification" }
+      - { name: data, label: Data, type: string, required: true }
+      - { name: model, label: Model, type: string, required: true }
+      - name: metric
+        label: Key metric
+        type: string
+        description: Real values only. Leave empty if there isn't one.
+      - { name: stack, label: Stack, type: string, list: true }
+      - name: status
+        label: Status
+        type: select
+        required: true
+        options:
+          values:
+            - { name: shipped, label: Shipped }
+            - { name: training, label: Training (in progress) }
+            - { name: planned, label: Planned }
+      - { name: featured, label: Show on homepage, type: boolean, description: The newest 4 featured projects appear on the homepage. }
+      - { name: cover, label: Cover image, type: image }
+      - { name: coverAlt, label: Cover image description, type: string, description: "What the image shows, for screen readers. Required if there's a cover." }
+      - { name: github, label: GitHub URL, type: string }
+      - { name: demo, label: Live demo URL, type: string }
+      - { name: writeup, label: Write-up URL, type: string }
+      - { name: team, label: Team, type: string, description: "For group projects, e.g. Team of 4, Break Through Tech AI" }
+      - { name: date, label: Date, type: date, required: true, options: { format: yyyy-MM-dd } }
+      - { name: draft, label: Draft (hidden from the site), type: boolean }
+      - name: body
+        label: Write-up
+        type: code
+        options:
+          format: markdown
+
+  - name: writing
+    label: Writing
+    type: collection
+    path: src/content/writing
+    filename: "{primary}/index.md"
+    format: yaml-frontmatter
+    subfolders: true
+    exclude: [.gitkeep]
+    view:
+      layout: tree
+      node:
+        filename: index.md
+        hideDirs: others
+      fields: [title, date]
+      primary: title
+      sort: date
+      order: desc
+    fields:
+      - { name: title, label: Title, type: string, required: true }
+      - { name: summary, label: Summary, type: text, required: true }
+      - { name: date, label: Date, type: date, required: true, options: { format: yyyy-MM-dd } }
+      - { name: cover, label: Cover image, type: image }
+      - { name: coverAlt, label: Cover image description, type: string }
+      - { name: draft, label: Draft (hidden from the site), type: boolean }
+      - name: body
+        label: Post
+        type: code
+        options:
+          format: markdown

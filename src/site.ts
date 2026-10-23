@@ -13,9 +13,13 @@ export const site = {
     github: 'https://github.com/WayneS0628',
     linkedin: 'https://www.linkedin.com/in/wayne-simmons-56808b201/',
   },
-  // Ambient audio loop played while audio is on. Leave empty until the guitar
-  // recording exists, then put the file in public/audio/ and set the path here.
+  // Background music while audio is on. Empty = the generative lofi loop
+  // (src/scripts/lofi.ts). To use a recording instead, put the file in
+  // public/audio/ and set its path here, e.g. '/audio/guitar.mp3'.
   ambient: '',
+  // Last.fm account for the "last played" widget. Both empty = widget hidden.
+  // The API key is a public read-only key from https://www.last.fm/api/account/create
+  lastfm: { user: '', apiKey: '' },
 };
 
 // Stats strip on the homepage. Real numbers only.
