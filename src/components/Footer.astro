@@ -1,0 +1,48 @@
+---
+import { site } from '../site';
+const year = new Date().getFullYear();
+---
+
+<footer class="ftr">
+  <div class="wrap ftr__in">
+    <p class="mono">© {year} {site.name}</p>
+    <ul class="ftr__links mono">
+      <li><a href={site.links.github} rel="me">GitHub</a></li>
+      <li><a href={site.links.linkedin} rel="me">LinkedIn</a></li>
+      <li><a href={site.resume}>Resume</a></li>
+    </ul>
+    <p class="mono ftr__hint">
+      Press <button class="btn-text" type="button" data-palette-open>[<span class="kbd-mod">⌘</span>K]</button> to jump anywhere
+    </p>
+  </div>
+</footer>
+
+<style>
+  .ftr {
+    border-top: 1px solid var(--border);
+    padding-block: 32px;
+    color: var(--muted);
+  }
+  .ftr__in {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px 32px;
+  }
+  .ftr__links {
+    display: flex;
+    gap: 20px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .ftr__links a {
+    text-decoration: none;
+  }
+  .ftr__hint {
+    margin-left: auto;
+  }
+  .ftr__hint .btn-text {
+    font-size: inherit;
+  }
+</style>

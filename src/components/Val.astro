@@ -1,0 +1,24 @@
+---
+// Renders a content value. TODO placeholders get flagged so they're
+// obvious; fields that simply don't apply (e.g. no metric) show "n/a".
+interface Props {
+  value?: string;
+}
+const { value } = Astro.props;
+---
+
+{
+  !value ? (
+    <span class="na">n/a</span>
+  ) : value.includes('TODO') ? (
+    <span class="todo">{value}</span>
+  ) : (
+    <>{value}</>
+  )
+}
+
+<style>
+  .na {
+    color: var(--muted);
+  }
+</style>

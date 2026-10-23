@@ -1,0 +1,194 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import portrait from '../assets/portrait.jpg';
+import fireTruck from '../assets/fire-truck.jpg';
+
+const goals = ['Get a motorcycle', 'Travel to Ethiopia', 'Collect art', 'Learn a backflip'];
+const habits = ['Gym', 'Guitar', 'Gaming', 'YouTube', 'Deep in a playlist'];
+---
+
+<Base
+  title="About"
+  description="Wayne Simmons: senior CS major at Queens College, Break Through Tech AI fellow, and ML engineer in the making from Brooklyn."
+>
+  <article class="wrap about">
+    <header class="about__head">
+      <div>
+        <p class="label"><b>[02]</b> About</p>
+        <h1 class="about__title">Hi, I'm Wayne.</h1>
+        <p class="about__lede">
+          I'm a senior Computer Science major at Queens College (CUNY), graduating in May 2027, and I'm building toward a
+          career in ML engineering.
+        </p>
+      </div>
+      <figure class="about__portrait">
+        <Image src={portrait} alt="Portrait of Wayne Simmons in glasses and a black quarter-zip" width={640} widths={[320, 480, 640]} sizes="(max-width: 800px) 60vw, 320px" loading="eager" />
+      </figure>
+    </header>
+
+    <div class="about__body prose">
+      <h2><span class="label"><b>[a]</b></span> Where I'm from</h2>
+      <p>
+        I was born in Brooklyn, and my family's roots are Trinidadian and Guyanese. New York is home base, and these
+        days that means Queens.
+      </p>
+
+      <h2><span class="label"><b>[b]</b></span> How I got here</h2>
+      <p>
+        I'm drawn to the part of AI where research meets reality, where models stop being experiments and start solving
+        actual problems. Right now that means the Break Through Tech AI 2026–27 cohort: ML foundations, plus an AI
+        Studio project with industry partners (that's the <a href="/work/cuad-contract-triage/">CUAD contract triage</a>
+        work).
+      </p>
+      <p>
+        Four years at Apple Retail and my job as a Resident Advisor at Summit Apartments keep me sharp in ways a CS
+        curriculum doesn't always cover: communication, accountability, and being the person people come to when things
+        go sideways.
+      </p>
+
+      <h2><span class="label"><b>[c]</b></span> The long game</h2>
+      <p>
+        ML engineering is the job. The mission is bigger: I want to use data and AI for child protection and
+        anti-trafficking work. Building systems that find what matters in messy data, and protect the people that data
+        is about.
+      </p>
+    </div>
+
+    <section class="clock-off" aria-labelledby="off-title">
+      <div class="clock-off__text">
+        <p class="label"><b>[d]</b> Off the clock</p>
+        <h2 id="off-title" class="clock-off__title">Not everything is a model.</h2>
+        <ul class="habits mono">
+          {habits.map((h) => <li>{h}</li>)}
+        </ul>
+        <p class="label goals__label">Goals, unranked</p>
+        <ul class="goals">
+          {
+            goals.map((g) => (
+              <li>
+                <span class="mono" aria-hidden="true">[ ]</span> {g}
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+      <figure class="clock-off__photo">
+        <Image src={fireTruck} alt="Wayne standing in front of an FDNY fire truck on a city street" width={960} widths={[480, 720, 960]} sizes="(max-width: 800px) 100vw, 480px" />
+      </figure>
+    </section>
+
+    <p class="about__cta">
+      Working on something interesting? <a href="/contact/">[04] Get in touch</a>
+    </p>
+  </article>
+</Base>
+
+<style>
+  .about {
+    padding-block: clamp(48px, 8vw, 96px);
+  }
+  .about__head {
+    display: grid;
+    grid-template-columns: 1fr minmax(200px, 320px);
+    gap: 48px;
+    align-items: end;
+  }
+  .about__title {
+    margin-top: 16px;
+    font-size: clamp(48px, 9vw, 120px);
+    letter-spacing: -0.05em;
+  }
+  .about__lede {
+    max-width: 44ch;
+    margin-top: 24px;
+    font-size: clamp(19px, 2.2vw, 24px);
+    line-height: 1.4;
+  }
+  figure {
+    margin: 0;
+  }
+  .about__portrait img,
+  .clock-off__photo img {
+    width: 100%;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    object-fit: cover;
+  }
+  .about__portrait img {
+    aspect-ratio: 3 / 4;
+  }
+  .about__body {
+    margin-top: 72px;
+  }
+  .about__body h2 {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+  .clock-off {
+    display: grid;
+    grid-template-columns: 1fr minmax(240px, 420px);
+    gap: 48px;
+    margin-top: 96px;
+    padding-top: 48px;
+    border-top: 1px solid var(--border);
+  }
+  .clock-off__title {
+    margin-top: 16px;
+    font-size: clamp(30px, 4vw, 48px);
+  }
+  .habits {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 28px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .habits li {
+    padding: 6px 12px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font-size: 13px;
+  }
+  .goals__label {
+    margin-top: 32px;
+  }
+  .goals {
+    margin: 12px 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: 20px;
+  }
+  .goals li {
+    padding: 10px 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  .goals .mono {
+    color: var(--accent-text);
+    margin-right: 8px;
+  }
+  .clock-off__photo img {
+    aspect-ratio: 4 / 5;
+  }
+  .about__cta {
+    margin-top: 80px;
+    font-size: 20px;
+  }
+  .about__cta a {
+    font-family: var(--font-mono);
+    font-size: 16px;
+    color: var(--accent-text);
+  }
+  @media (max-width: 800px) {
+    .about__head,
+    .clock-off {
+      grid-template-columns: 1fr;
+    }
+    .about__portrait {
+      max-width: 260px;
+      grid-row: 1;
+    }
+  }
+</style>

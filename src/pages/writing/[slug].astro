@@ -1,0 +1,56 @@
+---
+import { getCollection, render } from 'astro:content';
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('writing', ({ data }) => !data.draft);
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const fmt = new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
+---
+
+<Base title={post.data.title} description={post.data.summary}>
+  <article class="wrap post">
+    <a class="btn-text" href="/writing/">[← all writing]</a>
+    <p class="label date">{fmt.format(post.data.date)}</p>
+    <h1 class="post__title">{post.data.title}</h1>
+    <p class="post__summary">{post.data.summary}</p>
+    {post.data.cover && <Image class="post__cover" src={post.data.cover} alt={post.data.coverAlt ?? ''} width={1280} widths={[640, 960, 1280]} sizes="(max-width: 1200px) 100vw, 1120px" />}
+    <div class="prose post__body">
+      <Content />
+    </div>
+  </article>
+</Base>
+
+<style>
+  .post {
+    padding-block: clamp(32px, 6vw, 72px);
+  }
+  .date {
+    margin-top: 32px;
+  }
+  .post__title {
+    margin-top: 12px;
+    font-size: clamp(36px, 6vw, 72px);
+    letter-spacing: -0.04em;
+    max-width: 20ch;
+  }
+  .post__summary {
+    margin-top: 16px;
+    max-width: 52ch;
+    font-size: 20px;
+    color: var(--muted);
+  }
+  .post__cover {
+    width: 100%;
+    margin-top: 32px;
+    border-radius: var(--radius);
+  }
+  .post__body {
+    margin-top: 48px;
+  }
+</style>

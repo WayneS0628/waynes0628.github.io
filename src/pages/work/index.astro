@@ -1,0 +1,160 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Status from '../../components/Status.astro';
+import Val from '../../components/Val.astro';
+
+const projects = (await getCollection('projects', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+);
+const counts = {
+  shipped: projects.filter((p) => p.data.status === 'shipped').length,
+  training: projects.filter((p) => p.data.status === 'training').length,
+  planned: projects.filter((p) => p.data.status === 'planned').length,
+};
+---
+
+<Base title="Work" description="Projects by Wayne Simmons: ML models, data analysis, and tools, each with its task, data, model, and status.">
+  <section class="wrap page">
+    <p class="label"><b>[01]</b> Work</p>
+    <h1 class="page__title">The pipeline</h1>
+    <p class="page__lede">
+      Everything I've built or am building, newest first. Each one opens into a model card: the task, the data, the
+      model, and what actually happened.
+    </p>
+    <p class="mono counts">
+      <span class="status status--shipped">{counts.shipped} shipped</span>
+      <span class="status status--training">{counts.training} training</span>
+      <span class="status status--planned">{counts.planned} planned</span>
+    </p>
+
+    <table class="pipe">
+      <caption class="sr-only">All projects with task, stack, status, and year</caption>
+      <thead>
+        <tr>
+          <th scope="col" class="label">#</th>
+          <th scope="col" class="label">Project</th>
+          <th scope="col" class="label col-task">Task</th>
+          <th scope="col" class="label col-stack">Stack</th>
+          <th scope="col" class="label">Status</th>
+          <th scope="col" class="label col-year">Year</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          projects.map((p, i) => (
+            <tr>
+              <td class="mono idx">{String(i + 1).padStart(2, '0')}</td>
+              <td>
+                <a class="pipe__link" href={`/work/${p.id}/`}>
+                  {p.data.title}
+                </a>
+                <span class="pipe__summary"><Val value={p.data.summary} /></span>
+              </td>
+              <td class="col-task"><Val value={p.data.task} /></td>
+              <td class="mono col-stack">{p.data.stack.filter((s) => !s.includes('TODO')).join(', ')}</td>
+              <td><Status status={p.data.status} /></td>
+              <td class="mono col-year">{p.data.date.getUTCFullYear()}</td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </section>
+</Base>
+
+<style>
+  .page {
+    padding-block: clamp(48px, 8vw, 96px);
+  }
+  .page__title {
+    margin-top: 16px;
+    font-size: clamp(44px, 8vw, 104px);
+    letter-spacing: -0.045em;
+  }
+  .page__lede {
+    max-width: 56ch;
+    margin-top: 20px;
+    color: var(--muted);
+    font-size: 19px;
+  }
+  .counts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-top: 28px;
+  }
+  .pipe {
+    width: 100%;
+    margin-top: 40px;
+    border-collapse: collapse;
+  }
+  .pipe th {
+    text-align: left;
+    font-weight: 400;
+    padding: 0 16px 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .pipe td {
+    padding: 20px 16px 20px 0;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  .pipe tbody tr {
+    position: relative;
+    transition: background 0.2s var(--ease);
+  }
+  .pipe tbody tr:hover {
+    background: var(--surface);
+  }
+  .pipe__link {
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    text-decoration: none;
+  }
+  /* Whole row clickable via the title link */
+  .pipe__link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+  .pipe__summary {
+    display: block;
+    max-width: 48ch;
+    margin-top: 4px;
+    color: var(--muted);
+    font-size: 15px;
+  }
+  .idx {
+    color: var(--accent-text);
+    padding-left: 4px;
+  }
+  .col-task {
+    max-width: 26ch;
+  }
+  .col-stack {
+    font-size: 12px;
+    color: var(--muted);
+    max-width: 22ch;
+  }
+  .col-year {
+    color: var(--muted);
+  }
+  @media (max-width: 900px) {
+    .col-stack,
+    .col-task {
+      display: none;
+    }
+  }
+  @media (max-width: 560px) {
+    .col-year,
+    .pipe th:first-child,
+    .idx {
+      display: none;
+    }
+    .pipe td {
+      padding-right: 10px;
+    }
+  }
+</style>

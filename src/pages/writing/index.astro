@@ -1,0 +1,89 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+
+const posts = (await getCollection('writing', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+);
+const fmt = new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' });
+---
+
+<Base title="Writing" description="Notes and write-ups by Wayne Simmons on ML, data, and building things.">
+  <section class="wrap page">
+    <p class="label"><b>[03]</b> Writing</p>
+    <h1 class="page__title">Notes</h1>
+    {
+      posts.length ? (
+        <ul class="posts">
+          {posts.map((p) => (
+            <li>
+              <a href={`/writing/${p.id}/`}>
+                <span class="mono date">{fmt.format(p.data.date)}</span>
+                <span class="title">{p.data.title}</span>
+                <span class="summary">{p.data.summary}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p class="empty">
+          <span class="label">[empty]</span> Nothing published yet. In the meantime, the <a href="/work/">project write-ups</a> are the long-form stuff.
+        </p>
+      )
+    }
+  </section>
+</Base>
+
+<style>
+  .page {
+    padding-block: clamp(48px, 8vw, 96px);
+    min-height: 60vh;
+  }
+  .page__title {
+    margin-top: 16px;
+    font-size: clamp(44px, 8vw, 104px);
+    letter-spacing: -0.045em;
+  }
+  .posts {
+    list-style: none;
+    margin: 48px 0 0;
+    padding: 0;
+    border-top: 1px solid var(--border);
+  }
+  .posts a {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 4px 24px;
+    padding: 24px 0;
+    border-bottom: 1px solid var(--border);
+    text-decoration: none;
+  }
+  .date {
+    color: var(--muted);
+    grid-row: span 2;
+  }
+  .title {
+    font-size: 22px;
+    font-weight: 600;
+  }
+  .summary {
+    color: var(--muted);
+  }
+  .empty {
+    margin-top: 40px;
+    max-width: 52ch;
+    font-size: 19px;
+    color: var(--muted);
+  }
+  .empty a {
+    color: var(--accent-text);
+  }
+  @media (max-width: 600px) {
+    .posts a {
+      grid-template-columns: 1fr;
+    }
+    .date {
+      grid-row: auto;
+    }
+  }
+</style>

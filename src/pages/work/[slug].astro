@@ -1,0 +1,209 @@
+---
+import { getCollection, render } from 'astro:content';
+import { Image, getImage } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import Status from '../../components/Status.astro';
+import Val from '../../components/Val.astro';
+
+export async function getStaticPaths() {
+  const projects = (await getCollection('projects', ({ data }) => !data.draft)).sort(
+    (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+  );
+  return projects.map((project, i) => ({
+    params: { slug: project.id },
+    props: { project, prev: projects[i - 1], next: projects[i + 1] },
+  }));
+}
+
+const { project, prev, next } = Astro.props;
+const { Content } = await render(project);
+const d = project.data;
+const og = d.cover ? (await getImage({ src: d.cover, width: 1200, format: 'jpg' })).src : undefined;
+const links = [
+  d.github && { label: 'GitHub', href: d.github },
+  d.demo && { label: 'Live demo', href: d.demo },
+  d.writeup && { label: 'Write-up', href: d.writeup },
+].filter(Boolean) as { label: string; href: string }[];
+---
+
+<Base title={d.title} description={d.summary.includes('TODO') ? undefined : d.summary} image={og}>
+  <article class="wrap proj">
+    <a class="btn-text back" href="/work/">[← all work]</a>
+
+    <header class="proj__head">
+      <div class="proj__meta">
+        <Status status={d.status} />
+        <span class="label">{d.date.getUTCFullYear()}</span>
+        {d.team && <span class="label">{d.team}</span>}
+      </div>
+      <h1 class="proj__title">{d.title}</h1>
+      <p class="proj__summary"><Val value={d.summary} /></p>
+    </header>
+
+    <section class="spec" aria-label="Model card">
+      <p class="label spec__label"><b>[model card]</b></p>
+      <dl>
+        <div><dt class="label">Task</dt><dd><Val value={d.task} /></dd></div>
+        <div><dt class="label">Data</dt><dd><Val value={d.data} /></dd></div>
+        <div><dt class="label">Model</dt><dd><Val value={d.model} /></dd></div>
+        <div><dt class="label">Key metric</dt><dd class="spec__metric"><Val value={d.metric} /></dd></div>
+        <div>
+          <dt class="label">Stack</dt>
+          <dd>
+            {d.stack.map((s, i) => (
+              <>
+                {i > 0 && ', '}
+                <Val value={s} />
+              </>
+            ))}
+          </dd>
+        </div>
+        <div><dt class="label">Status</dt><dd><Status status={d.status} /></dd></div>
+      </dl>
+      {
+        links.length > 0 && (
+          <div class="spec__links">
+            {links.map((l) => (
+              <a class="btn" href={l.href}>
+                {l.label} ↗
+              </a>
+            ))}
+          </div>
+        )
+      }
+    </section>
+
+    {
+      d.cover && (
+        <Image
+          class="proj__cover"
+          src={d.cover}
+          alt={d.coverAlt ?? ''}
+          width={1280} widths={[640, 960, 1280]}
+          sizes="(max-width: 1200px) 100vw, 1120px"
+          loading="eager"
+        />
+      )
+    }
+
+    <div class="prose proj__body">
+      <Content />
+    </div>
+
+    <nav class="pn" aria-label="More projects">
+      {
+        prev ? (
+          <a href={`/work/${prev.id}/`}>
+            <span class="label">[← newer]</span>
+            {prev.data.title}
+          </a>
+        ) : (
+          <span />
+        )
+      }
+      {
+        next && (
+          <a class="pn__next" href={`/work/${next.id}/`}>
+            <span class="label">[older →]</span>
+            {next.data.title}
+          </a>
+        )
+      }
+    </nav>
+  </article>
+</Base>
+
+<style>
+  .proj {
+    padding-block: clamp(32px, 6vw, 72px);
+  }
+  .back {
+    padding-left: 0;
+    text-decoration: none;
+  }
+  .proj__head {
+    margin-top: 32px;
+  }
+  .proj__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 20px;
+  }
+  .proj__title {
+    margin-top: 20px;
+    font-size: clamp(40px, 7vw, 88px);
+    letter-spacing: -0.045em;
+    max-width: 16ch;
+  }
+  .proj__summary {
+    max-width: 52ch;
+    margin-top: 20px;
+    font-size: clamp(18px, 2vw, 22px);
+    color: var(--muted);
+  }
+  .spec {
+    margin-top: 48px;
+    padding: 24px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+  .spec dl {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+    gap: 20px 32px;
+    margin: 20px 0 0;
+  }
+  .spec dl div {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .spec dd {
+    margin: 0;
+  }
+  .spec__metric {
+    color: var(--accent-text);
+    font-weight: 500;
+  }
+  .spec__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px dashed var(--border);
+  }
+  .proj__cover {
+    width: 100%;
+    max-height: 560px;
+    object-fit: cover;
+    margin-top: 32px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+  }
+  .proj__body {
+    margin-top: 56px;
+  }
+  .pn {
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+    margin-top: 80px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+  }
+  .pn a {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-weight: 600;
+    text-decoration: none;
+    max-width: 45%;
+  }
+  .pn__next {
+    text-align: right;
+    margin-left: auto;
+  }
+</style>

@@ -1,0 +1,164 @@
+---
+// First-visit "training run". Shown only when the inline script in Base.astro
+// adds .is-loading (homepage, first visit this session, motion allowed).
+---
+
+<div class="fit" role="status" aria-label="Loading">
+  <div class="fit__term mono">
+    <p><span class="fit__prompt">&gt;&gt;&gt;</span> wayne.fit(data=noise, epochs=1)</p>
+    <p class="fit__stats">
+      step <span data-step>0000</span>/1200 · loss <span data-loss>2.3026</span>
+    </p>
+    <div class="fit__bar"><i></i></div>
+  </div>
+  <canvas class="fit__wave" aria-hidden="true"></canvas>
+  <button class="btn-text fit__skip" type="button">[esc] Skip</button>
+</div>
+
+<style>
+  .fit {
+    display: none;
+  }
+  :global(.is-loading) .fit {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: grid;
+    grid-template-rows: 1fr auto 1fr;
+    align-items: center;
+    background: var(--bg);
+    transition: opacity 0.35s var(--ease);
+  }
+  :global(.is-loading) body {
+    overflow: hidden;
+  }
+  .fit.fit--out {
+    opacity: 0;
+  }
+  .fit__term {
+    align-self: end;
+    width: min(560px, calc(100% - 32px));
+    margin: 0 auto 28px;
+    color: var(--muted);
+  }
+  .fit__term p + p {
+    margin-top: 6px;
+  }
+  .fit__prompt {
+    color: var(--accent-text);
+  }
+  .fit__stats span {
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+  }
+  .fit__bar {
+    height: 2px;
+    margin-top: 14px;
+    background: var(--border);
+  }
+  .fit__bar i {
+    display: block;
+    height: 100%;
+    width: 0;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  }
+  .fit__wave {
+    width: 100%;
+    height: clamp(120px, 26vh, 240px);
+  }
+  .fit__skip {
+    align-self: start;
+    justify-self: center;
+    margin-top: 28px;
+  }
+</style>
+
+<script>
+  import { signal } from '../lib/wave';
+
+  const root = document.documentElement;
+  const el = document.querySelector<HTMLElement>('.fit');
+
+  if (el && root.classList.contains('is-loading')) {
+    const canvas = el.querySelector('canvas')!;
+    const g = canvas.getContext('2d');
+    const stepEl = el.querySelector<HTMLElement>('[data-step]')!;
+    const lossEl = el.querySelector<HTMLElement>('[data-loss]')!;
+    const bar = el.querySelector<HTMLElement>('.fit__bar i')!;
+    const DURATION = 1900;
+    const STEPS = 1200;
+    let start = 0;
+    let done = false;
+
+    try {
+      sessionStorage.setItem('fit-done', '1');
+    } catch {}
+
+    const css = getComputedStyle(root);
+    const c1 = css.getPropertyValue('--accent').trim() || '#ff4d1f';
+    const c2 = css.getPropertyValue('--accent-2').trim() || '#ff8a3d';
+
+    function size() {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = canvas.clientWidth * dpr;
+      canvas.height = canvas.clientHeight * dpr;
+    }
+
+    function draw(p: number) {
+      if (!g) return;
+      const w = canvas.width;
+      const h = canvas.height;
+      const mid = h / 2;
+      const amp = h * 0.42;
+      const noise = Math.pow(1 - p, 1.6);
+      g.clearRect(0, 0, w, h);
+      const grad = g.createLinearGradient(0, 0, w, 0);
+      grad.addColorStop(0, c1);
+      grad.addColorStop(1, c2);
+      g.strokeStyle = grad;
+      g.lineWidth = Math.max(1.5, w / 900);
+      g.lineJoin = 'round';
+      g.beginPath();
+      const n = 240;
+      for (let i = 0; i <= n; i++) {
+        const x = i / n;
+        const y = mid - (signal(x) * (0.35 + 0.65 * p) + (Math.random() * 2 - 1) * noise * 0.9) * amp;
+        i ? g.lineTo(x * w, y) : g.moveTo(x * w, y);
+      }
+      g.stroke();
+    }
+
+    function finish() {
+      if (done) return;
+      done = true;
+      el!.classList.add('fit--out');
+      window.removeEventListener('keydown', onKey);
+      setTimeout(() => root.classList.remove('is-loading'), 350);
+    }
+
+    function frame(now: number) {
+      if (done) return;
+      if (!start) start = now;
+      const t = Math.min((now - start) / DURATION, 1);
+      const p = 1 - Math.pow(1 - t, 2.2);
+      const loss = 2.3026 * Math.exp(-4.4 * p) + 0.031 + (Math.random() - 0.5) * 0.04 * (1 - p);
+      stepEl.textContent = String(Math.round(t * STEPS)).padStart(4, '0');
+      lossEl.textContent = Math.max(loss, 0.031).toFixed(4);
+      bar.style.width = `${t * 100}%`;
+      draw(p);
+      if (t < 1) requestAnimationFrame(frame);
+      else setTimeout(finish, 180);
+    }
+
+    function onKey(e: KeyboardEvent) {
+      if (e.key === 'Escape' || e.key === 'Enter' || e.key === ' ') finish();
+    }
+
+    size();
+    window.addEventListener('resize', size);
+    window.addEventListener('keydown', onKey);
+    el.querySelector('.fit__skip')!.addEventListener('click', finish);
+    el.addEventListener('click', finish);
+    requestAnimationFrame(frame);
+  }
+</script>

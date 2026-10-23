@@ -1,0 +1,123 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import Status from './Status.astro';
+import Val from './Val.astro';
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+  index: number;
+}
+const { project, index } = Astro.props;
+const { title, summary, task, model, metric, stack, status, team } = project.data;
+const href = `/work/${project.id}/`;
+---
+
+<article class="card">
+  <div class="card__top">
+    <span class="label"><b>[{String(index + 1).padStart(2, '0')}]</b> Model card</span>
+    <Status status={status} />
+  </div>
+  <h3 class="card__title"><a href={href}>{title}</a></h3>
+  <p class="card__summary"><Val value={summary} /></p>
+  <dl class="card__spec">
+    <div><dt class="label">Task</dt><dd><Val value={task} /></dd></div>
+    <div><dt class="label">Model</dt><dd><Val value={model} /></dd></div>
+    <div><dt class="label">Key metric</dt><dd><Val value={metric} /></dd></div>
+  </dl>
+  <div class="card__foot">
+    <ul class="card__stack mono">
+      {stack.slice(0, 4).map((s) => <li>{s}</li>)}
+    </ul>
+    {team && <span class="label">Team project</span>}
+  </div>
+</article>
+
+<style>
+  .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 24px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    transition: border-color 0.25s var(--ease), transform 0.25s var(--ease);
+  }
+  .card:hover,
+  .card:focus-within {
+    border-color: color-mix(in srgb, var(--accent) 60%, var(--border));
+    transform: translateY(-2px);
+  }
+  .card__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+  }
+  .card__title {
+    font-size: clamp(22px, 2.4vw, 28px);
+  }
+  .card__title a {
+    text-decoration: none;
+  }
+  /* Whole card is clickable via the title link */
+  .card__title a::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+  }
+  .card__title a:focus-visible {
+    outline: none;
+  }
+  .card:has(.card__title a:focus-visible) {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+  .card__summary {
+    color: var(--muted);
+  }
+  .card__spec {
+    display: grid;
+    gap: 10px;
+    margin: 0;
+    padding-top: 16px;
+    border-top: 1px dashed var(--border);
+  }
+  .card__spec div {
+    display: grid;
+    grid-template-columns: 96px 1fr;
+    gap: 12px;
+    align-items: baseline;
+  }
+  .card__spec dt {
+    font-size: 11px;
+  }
+  .card__spec dd {
+    margin: 0;
+    font-size: 15px;
+  }
+  .card__foot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-top: auto;
+  }
+  .card__stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .card__stack li {
+    padding: 3px 8px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font-size: 11px;
+    color: var(--muted);
+  }
+</style>

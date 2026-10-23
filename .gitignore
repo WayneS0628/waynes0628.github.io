@@ -1,4 +1,5 @@
+node_modules/
+dist/
+.astro/
 .DS_Store
-_site/
-.jekyll-cache/
-2026-07-18-test-project.md
+.env

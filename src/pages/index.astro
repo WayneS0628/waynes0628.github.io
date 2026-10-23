@@ -1,0 +1,239 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import Loader from '../components/Loader.astro';
+import ModelCard from '../components/ModelCard.astro';
+import ContactBlock from '../components/ContactBlock.astro';
+import { site, stats } from '../site';
+import { wavePath } from '../lib/wave';
+
+const projects = await getCollection('projects', ({ data }) => !data.draft);
+const featured = projects
+  .filter((p) => p.data.featured)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 4);
+const shipped = projects.filter((p) => p.data.status === 'shipped').length;
+const strip = [{ value: String(shipped), label: 'projects shipped' }, ...stats];
+---
+
+<Base loader>
+  <Loader />
+
+  <section class="hero">
+    <div class="wrap hero__in">
+      <p class="label"><b>[00]</b> ML engineer · Queens, NY</p>
+      <h1 class="hero__title">Signal <span>over noise.</span></h1>
+      <p class="hero__sub">{site.description}</p>
+      <div class="hero__cta">
+        <a class="btn btn--accent" href="/work/">See the work →</a>
+        <a class="btn" href="/about/">[02] About me</a>
+      </div>
+    </div>
+    <svg class="hero__wave" viewBox="0 0 1200 200" preserveAspectRatio="none" aria-hidden="true">
+      <defs>
+        <linearGradient id="hero-grad" x1="0" x2="1" y1="0" y2="0">
+          <stop offset="0" stop-color="var(--accent)"></stop>
+          <stop offset="1" stop-color="var(--accent-2)"></stop>
+        </linearGradient>
+      </defs>
+      <path d={wavePath(1200, 200)}></path>
+    </svg>
+    <div class="wrap hero__foot">
+      <a class="label" href="#work">[scroll]</a>
+      <span class="label">NYC <span data-clock>--:--:--</span></span>
+    </div>
+  </section>
+
+  <section class="stats" aria-label="Quick numbers">
+    <dl class="wrap stats__in">
+      {
+        strip.map((s) => (
+          <div>
+            <dt class="label">{s.label}</dt>
+            <dd>{s.value}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </section>
+
+  <section class="section" id="work">
+    <div class="wrap">
+      <div class="section__head">
+        <div>
+          <p class="label"><b>[01]</b> Work</p>
+          <h2 class="section__title">Selected models</h2>
+        </div>
+        <a class="btn-text" href="/work/">[all projects →]</a>
+      </div>
+      <div class="grid">
+        {featured.map((p, i) => <ModelCard project={p} index={i} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section dict" aria-label="Definition">
+    <div class="wrap">
+      <p class="label"><b>[def]</b> Dictionary</p>
+      <div class="dict__entry">
+        <p class="dict__head">
+          <span class="dict__word">signal</span>
+          <span class="mono dict__ipa">/ˈsɪɡ.nəl/</span>
+          <em class="mono dict__pos">noun</em>
+        </p>
+        <p class="dict__def"><span class="mono">1.</span> The part of the data that's actually true.</p>
+        <p class="dict__mine"><span class="label">For me:</span> what's left when you cut everything that isn't.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="contact">
+    <div class="wrap">
+      <ContactBlock />
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hero {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100svh - 65px);
+    padding-top: clamp(48px, 10vh, 120px);
+    overflow: hidden;
+  }
+  .hero__title {
+    margin-top: 24px;
+    font-size: clamp(56px, 12.5vw, 176px);
+    line-height: 0.92;
+    letter-spacing: -0.05em;
+    font-weight: 600;
+  }
+  .hero__title span {
+    display: block;
+    color: var(--muted);
+  }
+  .hero__sub {
+    max-width: 40ch;
+    margin-top: 28px;
+    font-size: clamp(18px, 2vw, 22px);
+    line-height: 1.45;
+  }
+  .hero__cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 32px;
+  }
+  .hero__wave {
+    width: 100%;
+    height: clamp(90px, 16vh, 180px);
+    margin-top: auto;
+    animation: draw 1.6s 0.15s var(--ease) both;
+  }
+  .hero__wave path {
+    fill: none;
+    stroke: url(#hero-grad);
+    stroke-width: 2.5;
+    vector-effect: non-scaling-stroke;
+    stroke-linejoin: round;
+  }
+  /* Hold the draw-in until the loader hands off */
+  :global(.is-loading) .hero__wave {
+    animation-play-state: paused;
+  }
+  @keyframes draw {
+    from {
+      clip-path: inset(0 100% 0 0);
+    }
+    to {
+      clip-path: inset(0 0 0 0);
+    }
+  }
+  .hero__foot {
+    display: flex;
+    justify-content: space-between;
+    padding-block: 16px 24px;
+  }
+  .hero__foot a {
+    text-decoration: none;
+  }
+  .hero__foot [data-clock] {
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .stats {
+    border-top: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .stats__in {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    margin-block: 0;
+  }
+  .stats__in div {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 6px;
+    padding: 28px 24px 28px 0;
+  }
+  .stats__in dd {
+    margin: 0;
+    font-size: clamp(36px, 5vw, 56px);
+    font-weight: 600;
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 440px), 1fr));
+    gap: 16px;
+  }
+
+  .dict__entry {
+    max-width: 900px;
+    margin-top: 32px;
+  }
+  .dict__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 8px 20px;
+  }
+  .dict__word {
+    font-size: clamp(56px, 10vw, 128px);
+    font-weight: 600;
+    letter-spacing: -0.05em;
+    line-height: 1;
+  }
+  .dict__ipa,
+  .dict__pos {
+    color: var(--muted);
+    font-size: 16px;
+  }
+  .dict__def {
+    margin-top: 28px;
+    font-size: clamp(22px, 3vw, 34px);
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+  }
+  .dict__def .mono {
+    font-size: 0.6em;
+    color: var(--accent-text);
+    vertical-align: 0.3em;
+  }
+  .dict__mine {
+    margin-top: 20px;
+    padding-left: 16px;
+    border-left: 2px solid var(--accent);
+    font-size: clamp(18px, 2vw, 22px);
+    color: var(--muted);
+  }
+  .dict__mine .label {
+    color: var(--accent-text);
+    margin-right: 6px;
+  }
+</style>
