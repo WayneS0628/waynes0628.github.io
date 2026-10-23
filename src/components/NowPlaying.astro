@@ -1,6 +1,7 @@
 ---
-// "Last played" mini player, fed by Last.fm (Spotify scrobbles to it).
-// Hidden until a track loads, and not rendered at all until site.lastfm is set.
+// Spotify mini player, fed by Last.fm (Spotify scrobbles to it). Shows the
+// current track plus the one before it, or the last played track when nothing
+// is on. Hidden until a track loads, and not rendered until site.lastfm is set.
 import { site } from '../site';
 
 const { user, apiKey } = site.lastfm;
@@ -29,6 +30,11 @@ const show = (user && apiKey) || import.meta.env.DEV;
           <span class="np__artist" data-artist />
         </span>
       </a>
+      <a class="np__prev" data-prev hidden rel="noopener">
+        <span class="label">before that</span>
+        <span class="np__prev-text" data-prev-text />
+        <span class="np__prev-when" data-prev-when />
+      </a>
     </aside>
   )
 }
@@ -55,6 +61,37 @@ const show = (user && apiKey) || import.meta.env.DEV;
   .np__link:hover {
     border-color: color-mix(in srgb, var(--accent) 60%, var(--border));
     color: inherit;
+  }
+  .np__prev {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin: 6px 4px 0;
+    font-size: 13px;
+    color: var(--muted);
+    text-decoration: none;
+    min-width: 0;
+  }
+  .np__prev[hidden] {
+    display: none;
+  }
+  .np__prev .label {
+    flex: none;
+    font-size: 10px;
+  }
+  .np__prev-text {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .np__prev-when {
+    flex: none;
+    margin-left: auto;
+    font-family: var(--font-mono);
+    font-size: 11px;
+  }
+  .np__prev:hover .np__prev-text {
+    color: var(--text);
   }
   .np__art {
     position: relative;
@@ -175,7 +212,7 @@ const show = (user && apiKey) || import.meta.env.DEV;
     return 'just now';
   }
 
-  function render(t: Track) {
+  function render(t: Track, prev?: Track) {
     if (!el) return;
     const img = el.querySelector('img')!;
     const art = t.image && !t.image.includes(PLACEHOLDER) ? t.image : '';
@@ -186,6 +223,17 @@ const show = (user && apiKey) || import.meta.env.DEV;
     el.querySelector('[data-artist]')!.textContent = t.artist;
     el.querySelector('[data-state]')!.textContent = t.now ? 'now playing' : `last played · ${t.uts ? ago(t.uts) : 'recently'}`;
     el.toggleAttribute('data-now', t.now);
+
+    // While something is playing, also show the track before it.
+    const row = el.querySelector<HTMLAnchorElement>('[data-prev]')!;
+    if (t.now && prev) {
+      row.href = prev.url;
+      row.querySelector('[data-prev-text]')!.textContent = `${prev.name} · ${prev.artist}`;
+      row.querySelector('[data-prev-when]')!.textContent = prev.uts ? ago(prev.uts) : '';
+      row.hidden = false;
+    } else {
+      row.hidden = true;
+    }
     el.hidden = false;
   }
 
@@ -195,20 +243,23 @@ const show = (user && apiKey) || import.meta.env.DEV;
     if (!user || !key || document.hidden) return;
     try {
       const url = new URL('https://ws.audioscrobbler.com/2.0/');
-      url.search = new URLSearchParams({ method: 'user.getrecenttracks', user, api_key: key, format: 'json', limit: '1' }).toString();
+      // limit=2: the current/last track and the one before it. (Last.fm adds the
+      // now-playing track on top of the limit, so this can return three.)
+      url.search = new URLSearchParams({ method: 'user.getrecenttracks', user, api_key: key, format: 'json', limit: '2' }).toString();
       const res = await fetch(url);
       if (!res.ok) return;
       const data = await res.json();
-      const t = [].concat(data?.recenttracks?.track ?? [])[0] as any;
-      if (!t) return;
-      render({
-        name: t.name,
-        artist: t.artist?.['#text'] ?? '',
-        image: (t.image ?? []).find((i: any) => i.size === 'extralarge')?.['#text'],
-        url: t.url,
-        now: t['@attr']?.nowplaying === 'true',
-        uts: t.date?.uts ? Number(t.date.uts) : undefined,
-      });
+      const tracks = ([].concat(data?.recenttracks?.track ?? []) as any[]).map(
+        (t): Track => ({
+          name: t.name,
+          artist: t.artist?.['#text'] ?? '',
+          image: (t.image ?? []).find((i: any) => i.size === 'extralarge')?.['#text'],
+          url: t.url,
+          now: t['@attr']?.nowplaying === 'true',
+          uts: t.date?.uts ? Number(t.date.uts) : undefined,
+        }),
+      );
+      if (tracks.length) render(tracks[0], tracks[1]);
     } catch {
       /* offline or Last.fm is down: keep whatever is showing */
     }
