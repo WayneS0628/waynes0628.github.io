@@ -10,7 +10,7 @@ stack:
   - Streamlit
   - Anthropic API
 status: shipped
-featured: true
+featured: false
 github: https://github.com/WayneS0628/claude-rag-chatbot
 date: 2026-10-20
 draft: false
