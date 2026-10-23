@@ -1,16 +1,20 @@
 ---
 title: Claude RAG Chatbot
-summary: A Streamlit chatbot on the Claude API that routes each question to the right knowledge base and answers grounded in it.
+summary: A Streamlit chatbot on the Claude API that routes each question to the
+  right knowledge base and answers grounded in it.
 task: Retrieval-augmented question answering
 data: Knowledge base files on Harvard, Cornell, and Duke
 model: Claude Haiku as router, Claude for generation
-stack: [Python, Streamlit, Anthropic API]
+stack:
+  - Python
+  - Streamlit
+  - Anthropic API
 status: shipped
-featured: false
+featured: true
 github: https://github.com/WayneS0628/claude-rag-chatbot
 date: 2026-10-20
+draft: false
 ---
-
 A small RAG (retrieval-augmented generation) chatbot built during my Break Through Tech AI fellowship. The original course exercise was written for OpenAI; I ported it to Anthropic because I wanted to actually learn the Claude API.
 
 Ask it about Harvard, Cornell, or Duke and it will:
