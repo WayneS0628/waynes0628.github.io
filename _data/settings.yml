@@ -1,7 +1,7 @@
 #-------------------------------
 # Site Settings
-title: Wayne
-description: I am a dedicated computer science student passionate about machine learning
+title: Wayne Simmons, ML Engineer
+description: I'm Wayne, an ML engineer in Queens building AI that finds what matters in messy data, and someday protects the people it's about.
 logo: "/images/logo.svg" # You can add own logo. For example "/images/logo.svg".
 logo_dark: "/images/logo-dark.svg"
 color_scheme: dark # You can choose three modes auto, light, and dark. By default, the auto mode is set, which means the user can choose the light or dark mode themself.
@@ -48,8 +48,8 @@ author:
 # Hero Settings
 hero:
   enable: true
-  hero_title: I am a dedicated computer science student passionate about machine learning.
-  hero_description: Leveraging my experience in machine learning and software development, I work on building practical solutions that turn complex data into meaningful results. I'm always excited to collaborate on projects that push ideas beyond theory and into real-world impact.
+  hero_title: Signal over noise.
+  hero_description: I'm Wayne, an ML engineer in Queens building AI that finds what matters in messy data, and someday protects the people it's about.
 
 # Hero Logos
 hero_logos:
@@ -88,7 +88,7 @@ featured:
 #-------------------------------
 # Projects Section Settings
 projects:
-  enable: true
+  enable: false # every project is featured, so this section rendered empty
   projects_title: Recent Work
   projects_description:
 
@@ -122,7 +122,7 @@ faq:
 #-------------------------------
 # Blog Section Settings
 blog:
-  enable: true
+  enable: false # no posts yet; re-enable once Writing has real posts
   blog_intro: What’s new?
   blog_title: Latest from blog
 
@@ -135,7 +135,7 @@ author_section:
   author_section_description: When I'm not building models or pushing commits, you can catch me at the gym, gaming, watching youtube videos, playing my guitar, or deep in a playlist. Non-career related goals? Get a cool motorcycle, travel to Ethiopia, collect cool art, and learn to do a backflip. If you're working on something cool or just want to connect, let's talk.
   author_section_image: "/images/Fun01.JPG"
   author_section_image_alt: Wayne Simmons
-  author_section_button_text: Let's сonnect!
+  author_section_button_text: Let's connect!
   author_section_button_link: "/contact/"
 
 
