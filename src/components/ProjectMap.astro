@@ -287,13 +287,12 @@ const lines = points
 </style>
 
 <script>
-  document.querySelectorAll<HTMLElement>('.pmap').forEach((root) => {
-    const buttons = root.querySelectorAll<HTMLButtonElement>('[data-view-btn]');
-    buttons.forEach((b) =>
-      b.addEventListener('click', () => {
-        root.dataset.view = b.dataset.viewBtn;
-        buttons.forEach((o) => o.setAttribute('aria-pressed', String(o === b)));
-      }),
-    );
+  // Delegated, so it keeps working when the homepage is re-rendered by client-side navigation.
+  document.addEventListener('click', (e) => {
+    const b = (e.target as Element).closest<HTMLButtonElement>('[data-view-btn]');
+    const root = b?.closest<HTMLElement>('.pmap');
+    if (!b || !root) return;
+    root.dataset.view = b.dataset.viewBtn;
+    root.querySelectorAll('[data-view-btn]').forEach((o) => o.setAttribute('aria-pressed', String(o === b)));
   });
 </script>

@@ -19,7 +19,7 @@ export const site = {
   ambient: '',
   // Last.fm account for the "last played" widget. Both empty = widget hidden.
   // The API key is a public read-only key from https://www.last.fm/api/account/create
-  lastfm: { user: '', apiKey: '' },
+  lastfm: { user: 'waynes0628', apiKey: 'e22c73e0a73779489a29d690caf3281f' },
 };
 
 // Stats strip on the homepage. Real numbers only.
