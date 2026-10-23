@@ -2,6 +2,17 @@
 
 Everything you'd normally change is plain Markdown or one settings file. You don't need to touch components.
 
+## Edit in the browser (no code)
+
+The site has a web editor, [Pages CMS](https://pagescms.org):
+
+1. Go to [app.pagescms.org](https://app.pagescms.org) and sign in with GitHub.
+2. Install the Pages CMS GitHub app when it asks, and give it access to `waynes0628.github.io`.
+3. Open the repo. You'll see **Projects** and **Writing** with a form for every field.
+4. Pick a branch at the top. Editing `main` publishes as soon as you save; editing another branch lets you open a PR first.
+
+Images you upload there go to `public/uploads/`. The write-up box is Markdown, same as editing the file directly.
+
 ## Run it locally
 
 ```bash
@@ -60,6 +71,28 @@ summary: One-sentence teaser.
 date: 2026-11-20
 ---
 ```
+
+## Update the project map
+
+The homepage map places projects by meaning, using a small language model. After adding or changing projects, run:
+
+```bash
+npm run map
+```
+
+The first run downloads the model and its runtime (about 600 MB, kept out of git and never installed by the deploy). Then commit `src/data/project-map.json`. A project missing from the map still shows in the map's list view and everywhere else.
+
+## Turn on the "last played" widget
+
+1. Make a free [Last.fm](https://www.last.fm/join) account, then in Last.fm settings go to **Applications** and connect Spotify, so your plays get scrobbled.
+2. Create an API key at [last.fm/api/account/create](https://www.last.fm/api/account/create). Only the **API key** is needed, not the shared secret.
+3. In `src/site.ts`, set `lastfm: { user: 'your-lastfm-username', apiKey: 'your-key' }`.
+
+The widget stays hidden until both are set, or if Last.fm is unreachable.
+
+## Background music
+
+`[audio: on]` plays a lofi loop that's generated live in the browser (`src/scripts/lofi.ts`), so there's no audio file. To use a recording instead, put it in `public/audio/` and set `ambient` in `src/site.ts` to its path.
 
 ## Change contact info, the status chip, or stats
 

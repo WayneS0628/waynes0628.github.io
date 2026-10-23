@@ -1,0 +1,72 @@
+---
+import { W, H, far, near } from '../lib/skyline';
+---
+
+<svg class="sky" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMax slice">
+  <path class="sky__far" d={far.path}></path>
+  <g class="sky__win sky__win--far">
+    {far.windows.map((w) => <rect x={w.x} y={w.y} width={w.w} height={w.h} />)}
+  </g>
+  <path class="sky__near" d={near.path}></path>
+  <g class="sky__win">
+    {
+      near.windows.map((w) => (
+        <rect
+          x={w.x}
+          y={w.y}
+          width={w.w}
+          height={w.h}
+          class={w.twinkle ? 'tw' : undefined}
+          style={w.twinkle ? `animation-delay:-${w.delay}s` : undefined}
+        />
+      ))
+    }
+  </g>
+  <rect class="sky__ground" x="0" y={H - 1} width={W} height="1"></rect>
+</svg>
+
+<style>
+  .sky {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .sky__far {
+    fill: var(--surface);
+  }
+  .sky__near {
+    fill: var(--surface-2);
+  }
+  .sky__ground {
+    fill: var(--border);
+  }
+  .sky__win rect {
+    fill: var(--accent-2);
+    opacity: 0.55;
+  }
+  .sky__win--far rect {
+    opacity: 0.22;
+  }
+  .sky__win rect.tw {
+    animation: twinkle 8s ease-in-out infinite;
+  }
+  @keyframes twinkle {
+    0%, 40%, 100% { opacity: 0.55; }
+    50%, 70% { opacity: 0.08; }
+  }
+  /* Daytime: darker silhouettes on the pale background, windows read as glass */
+  :global([data-theme='light']) .sky__far {
+    fill: var(--surface-2);
+  }
+  :global([data-theme='light']) .sky__near {
+    fill: var(--border);
+  }
+  :global([data-theme='light']) .sky__win rect {
+    fill: var(--bg);
+    opacity: 0.7;
+  }
+  :global([data-theme='light']) .sky__win--far rect {
+    opacity: 0.35;
+  }
+</style>

@@ -1,10 +1,14 @@
-import { defineCollection } from 'astro:content';
+import { defineCollection, type SchemaContext } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 
 // Each entry lives in its own folder (src/content/<collection>/<slug>/index.md)
 // so its images can sit right next to it. The folder name is the URL slug.
 const folderId = ({ entry }: { entry: string }) => entry.split('/')[0];
+
+// A cover is either an image next to the entry (./cover.jpg, optimized at build)
+// or a public path like /uploads/cover.jpg (what the web editor writes).
+const cover = (image: SchemaContext['image']) => z.union([z.string().regex(/^(\/|https?:)/), image()]).optional();
 
 const projects = defineCollection({
   loader: glob({ pattern: '*/index.md', base: './src/content/projects', generateId: folderId }),
@@ -19,7 +23,7 @@ const projects = defineCollection({
       stack: z.array(z.string()).default([]),
       status: z.enum(['shipped', 'training', 'planned']),
       featured: z.boolean().default(false),
-      cover: image().optional(),
+      cover: cover(image),
       coverAlt: z.string().optional(),
       github: z.string().optional(),
       demo: z.string().optional(),
@@ -37,7 +41,7 @@ const writing = defineCollection({
       title: z.string(),
       summary: z.string(),
       date: z.coerce.date(),
-      cover: image().optional(),
+      cover: cover(image),
       coverAlt: z.string().optional(),
       draft: z.boolean().default(false),
     }),

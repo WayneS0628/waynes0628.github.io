@@ -2,6 +2,9 @@
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import Loader from '../components/Loader.astro';
+import Skyline from '../components/Skyline.astro';
+import NowPlaying from '../components/NowPlaying.astro';
+import ProjectMap from '../components/ProjectMap.astro';
 import ModelCard from '../components/ModelCard.astro';
 import ContactBlock from '../components/ContactBlock.astro';
 import { site, stats } from '../site';
@@ -21,6 +24,7 @@ const strip = [{ value: String(shipped), label: 'projects shipped' }, ...stats];
 
   <section class="hero">
     <div class="wrap hero__in">
+      <div class="hero__text">
       <p class="label"><b>[00]</b> ML engineer · Queens, NY</p>
       <h1 class="hero__title">Signal <span>over noise.</span></h1>
       <p class="hero__sub">{site.description}</p>
@@ -28,8 +32,14 @@ const strip = [{ value: String(shipped), label: 'projects shipped' }, ...stats];
         <a class="btn btn--accent" href="/work/">See the work →</a>
         <a class="btn" href="/about/">[02] About me</a>
       </div>
+      </div>
+      <div class="hero__side">
+        <NowPlaying />
+      </div>
     </div>
-    <svg class="hero__wave" viewBox="0 0 1200 200" preserveAspectRatio="none" aria-hidden="true">
+    <div class="hero__scene" aria-hidden="true">
+      <Skyline />
+    <svg class="hero__wave" viewBox="0 0 1200 200" preserveAspectRatio="none">
       <defs>
         <linearGradient id="hero-grad" x1="0" x2="1" y1="0" y2="0">
           <stop offset="0" stop-color="var(--accent)"></stop>
@@ -38,6 +48,7 @@ const strip = [{ value: String(shipped), label: 'projects shipped' }, ...stats];
       </defs>
       <path d={wavePath(1200, 200)}></path>
     </svg>
+    </div>
     <div class="wrap hero__foot">
       <a class="label" href="#work">[scroll]</a>
       <span class="label">NYC <span data-clock>--:--:--</span></span>
@@ -72,6 +83,18 @@ const strip = [{ value: String(shipped), label: 'projects shipped' }, ...stats];
     </div>
   </section>
 
+  <section class="section" id="map">
+    <div class="wrap">
+      <div class="section__head">
+        <div>
+          <p class="label"><b>[map]</b> Latent space</p>
+          <h2 class="section__title">How the work clusters</h2>
+        </div>
+      </div>
+      <ProjectMap />
+    </div>
+  </section>
+
   <section class="section dict" aria-label="Definition">
     <div class="wrap">
       <p class="label"><b>[def]</b> Dictionary</p>
@@ -103,6 +126,21 @@ const strip = [{ value: String(shipped), label: 'projects shipped' }, ...stats];
     padding-top: clamp(48px, 10vh, 120px);
     overflow: hidden;
   }
+  .hero__in {
+    position: relative;
+  }
+  .hero__side {
+    margin-top: 32px;
+  }
+  /* Desktop: the player sits bottom-right, level with the buttons */
+  @media (min-width: 1000px) {
+    .hero__side {
+      position: absolute;
+      right: var(--gutter);
+      bottom: 0;
+      margin: 0;
+    }
+  }
   .hero__title {
     margin-top: 24px;
     font-size: clamp(56px, 12.5vw, 176px);
@@ -126,10 +164,16 @@ const strip = [{ value: String(shipped), label: 'projects shipped' }, ...stats];
     gap: 12px;
     margin-top: 32px;
   }
-  .hero__wave {
-    width: 100%;
-    height: clamp(90px, 16vh, 180px);
+  .hero__scene {
+    position: relative;
+    height: clamp(170px, 30vh, 300px);
     margin-top: auto;
+  }
+  .hero__wave {
+    position: absolute;
+    inset: 0 0 auto;
+    width: 100%;
+    height: 55%;
     animation: draw 1.6s 0.15s var(--ease) both;
   }
   .hero__wave path {

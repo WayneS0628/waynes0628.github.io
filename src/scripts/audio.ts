@@ -37,16 +37,33 @@ export function tick(kind: 'hover' | 'click' = 'hover') {
   osc.stop(t + 0.1);
 }
 
-function syncAmbient() {
+let lofi: { start(): void; stop(): void } | null = null;
+
+// Background music: a recorded loop if one is configured (site.ambient),
+// otherwise the generative lofi loop, loaded on first use.
+async function syncAmbient() {
   const src = root.dataset.ambient;
-  if (!src) return;
+  if (src) {
+    if (audioOn()) {
+      ambient ??= Object.assign(new Audio(src), { loop: true, volume: 0.25 });
+      ambient.play().catch(() => {
+        /* blocked until the next user gesture */
+      });
+    } else {
+      ambient?.pause();
+    }
+    return;
+  }
   if (audioOn()) {
-    ambient ??= Object.assign(new Audio(src), { loop: true, volume: 0.25 });
-    ambient.play().catch(() => {
-      /* blocked until the next user gesture */
-    });
+    const c = context();
+    if (!c) return;
+    if (!lofi) {
+      const { createLofi } = await import('./lofi');
+      lofi = createLofi(c);
+    }
+    if (audioOn()) lofi.start();
   } else {
-    ambient?.pause();
+    lofi?.stop();
   }
 }
 

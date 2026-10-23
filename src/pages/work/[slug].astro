@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
-import { Image, getImage } from 'astro:assets';
+import { getImage } from 'astro:assets';
+import Cover from '../../components/Cover.astro';
 import Base from '../../layouts/Base.astro';
 import Status from '../../components/Status.astro';
 import Val from '../../components/Val.astro';
@@ -18,7 +19,7 @@ export async function getStaticPaths() {
 const { project, prev, next } = Astro.props;
 const { Content } = await render(project);
 const d = project.data;
-const og = d.cover ? (await getImage({ src: d.cover, width: 1200, format: 'jpg' })).src : undefined;
+const og = !d.cover ? undefined : typeof d.cover === 'string' ? d.cover : (await getImage({ src: d.cover, width: 1200, format: 'jpg' })).src;
 const links = [
   d.github && { label: 'GitHub', href: d.github },
   d.demo && { label: 'Live demo', href: d.demo },
@@ -73,18 +74,7 @@ const links = [
       }
     </section>
 
-    {
-      d.cover && (
-        <Image
-          class="proj__cover"
-          src={d.cover}
-          alt={d.coverAlt ?? ''}
-          width={1280} widths={[640, 960, 1280]}
-          sizes="(max-width: 1200px) 100vw, 1120px"
-          loading="eager"
-        />
-      )
-    }
+    {d.cover && <Cover class="proj__cover" src={d.cover} alt={d.coverAlt ?? ''} eager />}
 
     <div class="prose proj__body">
       <Content />

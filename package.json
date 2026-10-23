@@ -6,7 +6,8 @@
     "dev": "astro dev",
     "build": "node scripts/check-copy.mjs && astro build",
     "preview": "astro preview",
-    "todos": "node scripts/check-copy.mjs --todos"
+    "todos": "node scripts/check-copy.mjs --todos",
+    "map": "npm --prefix scripts/project-map install --no-audit --no-fund --silent && node scripts/project-map/index.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",

@@ -1,0 +1,10 @@
+{
+  "name": "project-map",
+  "private": true,
+  "type": "module",
+  "description": "Embeds project descriptions and lays them out in 2D. Kept separate so the site build never installs ML packages.",
+  "dependencies": {
+    "@huggingface/transformers": "4.3.1",
+    "yaml": "^2.8.1"
+  }
+}

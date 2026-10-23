@@ -1,0 +1,223 @@
+---
+// "Last played" mini player, fed by Last.fm (Spotify scrobbles to it).
+// Hidden until a track loads, and not rendered at all until site.lastfm is set.
+import { site } from '../site';
+
+const { user, apiKey } = site.lastfm;
+const show = (user && apiKey) || import.meta.env.DEV;
+---
+
+{
+  show && (
+    <aside class="np" hidden data-user={user} data-key={apiKey} aria-label="What Wayne listened to last">
+      <a class="np__link" href={`https://www.last.fm/user/${user}`} rel="noopener">
+        <span class="np__art" aria-hidden="true">
+          <span class="np__disc" />
+          <span class="np__fallback">♪</span>
+          <img alt="" width="56" height="56" loading="lazy" decoding="async" />
+        </span>
+        <span class="np__meta">
+          <span class="label np__state">
+            <span class="np__eq" aria-hidden="true">
+              <i />
+              <i />
+              <i />
+            </span>
+            <span data-state>last played</span>
+          </span>
+          <span class="np__track" data-track />
+          <span class="np__artist" data-artist />
+        </span>
+      </a>
+    </aside>
+  )
+}
+
+<style>
+  .np {
+    width: min(100%, 320px);
+  }
+  .np[hidden] {
+    display: none;
+  }
+  .np__link {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 18px 12px 12px;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: color-mix(in srgb, var(--surface) 88%, transparent);
+    backdrop-filter: blur(8px);
+    text-decoration: none;
+    transition: border-color 0.2s var(--ease);
+  }
+  .np__link:hover {
+    border-color: color-mix(in srgb, var(--accent) 60%, var(--border));
+    color: inherit;
+  }
+  .np__art {
+    position: relative;
+    flex: none;
+    width: 56px;
+    height: 56px;
+    margin-right: 14px;
+  }
+  /* A record peeking out of the sleeve; it spins while something is playing. */
+  .np__disc {
+    position: absolute;
+    inset: 3px -14px 3px auto;
+    width: 50px;
+    border-radius: 50%;
+    background:
+      radial-gradient(circle, var(--accent-2) 0 6px, #0e0f11 7px 8px, transparent 9px),
+      repeating-radial-gradient(circle, #2b2d33 0 2px, #3d4047 2px 3px);
+    box-shadow: 0 0 0 1px #4a4d55;
+    transition: right 0.4s var(--ease);
+  }
+  .np[data-now] .np__disc {
+    right: -20px;
+    animation: spin 2.4s linear infinite;
+  }
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  .np__art img,
+  .np__fallback {
+    position: absolute;
+    inset: 0;
+    width: 56px;
+    height: 56px;
+    border-radius: 8px;
+    object-fit: cover;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+  }
+  .np__fallback {
+    display: grid;
+    place-items: center;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    color: #0e0f11;
+    font-size: 22px;
+  }
+  .np__art img:not([src]),
+  .np__art img[src=''] {
+    visibility: hidden;
+  }
+  .np__meta {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    gap: 2px;
+  }
+  .np__state {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10px;
+  }
+  .np[data-now] .np__state {
+    color: var(--ok);
+  }
+  .np__track,
+  .np__artist {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .np__track {
+    font-weight: 600;
+    font-size: 15px;
+  }
+  .np__artist {
+    color: var(--muted);
+    font-size: 14px;
+  }
+  .np__eq {
+    display: inline-flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 10px;
+  }
+  .np__eq i {
+    width: 2px;
+    height: 40%;
+    background: currentColor;
+  }
+  .np[data-now] .np__eq i {
+    animation: eq 0.9s ease-in-out infinite alternate;
+  }
+  .np[data-now] .np__eq i:nth-child(2) {
+    animation-delay: -0.3s;
+  }
+  .np[data-now] .np__eq i:nth-child(3) {
+    animation-delay: -0.6s;
+  }
+  @keyframes eq {
+    from { height: 20%; }
+    to { height: 100%; }
+  }
+</style>
+
+<script>
+  type Track = { name: string; artist: string; image?: string; url: string; now: boolean; uts?: number };
+
+  const el = document.querySelector<HTMLElement>('.np');
+  // Last.fm's grey star placeholder, used when it has no album art
+  const PLACEHOLDER = '2a96cbd8b46e442fc41c2b86b821562f';
+  const rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
+
+  function ago(uts: number) {
+    const s = Math.round((uts * 1000 - Date.now()) / 1000);
+    const units: [Intl.RelativeTimeFormatUnit, number][] = [['day', 86400], ['hour', 3600], ['minute', 60]];
+    for (const [unit, secs] of units) if (Math.abs(s) >= secs) return rtf.format(Math.round(s / secs), unit);
+    return 'just now';
+  }
+
+  function render(t: Track) {
+    if (!el) return;
+    const img = el.querySelector('img')!;
+    const art = t.image && !t.image.includes(PLACEHOLDER) ? t.image : '';
+    if (art) img.src = art;
+    else img.removeAttribute('src');
+    el.querySelector<HTMLAnchorElement>('.np__link')!.href = t.url;
+    el.querySelector('[data-track]')!.textContent = t.name;
+    el.querySelector('[data-artist]')!.textContent = t.artist;
+    el.querySelector('[data-state]')!.textContent = t.now ? 'now playing' : `last played · ${t.uts ? ago(t.uts) : 'recently'}`;
+    el.toggleAttribute('data-now', t.now);
+    el.hidden = false;
+  }
+
+  async function load() {
+    const user = el?.dataset.user;
+    const key = el?.dataset.key;
+    if (!user || !key || document.hidden) return;
+    try {
+      const url = new URL('https://ws.audioscrobbler.com/2.0/');
+      url.search = new URLSearchParams({ method: 'user.getrecenttracks', user, api_key: key, format: 'json', limit: '1' }).toString();
+      const res = await fetch(url);
+      if (!res.ok) return;
+      const data = await res.json();
+      const t = [].concat(data?.recenttracks?.track ?? [])[0] as any;
+      if (!t) return;
+      render({
+        name: t.name,
+        artist: t.artist?.['#text'] ?? '',
+        image: (t.image ?? []).find((i: any) => i.size === 'extralarge')?.['#text'],
+        url: t.url,
+        now: t['@attr']?.nowplaying === 'true',
+        uts: t.date?.uts ? Number(t.date.uts) : undefined,
+      });
+    } catch {
+      /* offline or Last.fm is down: keep whatever is showing */
+    }
+  }
+
+  if (el) {
+    load();
+    setInterval(load, 60_000);
+    document.addEventListener('visibilitychange', load);
+    if (import.meta.env.DEV) (window as any).__nowPlaying = render; // for previewing without an account
+  }
+</script>
