@@ -1,0 +1,17 @@
+---
+import Base from '../layouts/Base.astro';
+import ContactBlock from '../components/ContactBlock.astro';
+---
+
+<Base title="Contact" description="Get in touch with Wayne Simmons about ML internships, research, or projects.">
+  <section class="wrap page">
+    <ContactBlock as="h1" />
+  </section>
+</Base>
+
+<style>
+  .page {
+    padding-block: clamp(48px, 8vw, 96px);
+    min-height: 70vh;
+  }
+</style>

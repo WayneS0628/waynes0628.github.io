@@ -1,0 +1,243 @@
+---
+import { getCollection } from 'astro:content';
+import { nav, site } from '../site';
+
+const projects = (await getCollection('projects', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+);
+
+type Item = { label: string; group: string; href?: string; action?: string; keywords?: string };
+const items: Item[] = [
+  { label: 'Home', group: 'Page', href: '/' },
+  ...nav.map((n) => ({ label: n.label, group: 'Page', href: n.href })),
+  ...projects.map((p) => ({
+    label: p.data.title,
+    group: 'Project',
+    href: `/work/${p.id}/`,
+    keywords: `${p.id.replace(/-/g, ' ')} ${p.data.task} ${p.data.stack.join(' ')}`,
+  })),
+  { label: 'Open resume', group: 'Action', href: site.resume, keywords: 'cv pdf' },
+  ...(site.email ? [{ label: 'Copy email', group: 'Action', action: 'copy-email', keywords: 'contact mail' }] : []),
+  { label: 'Toggle theme', group: 'Action', action: 'theme', keywords: 'dark light mode' },
+  { label: 'Toggle audio', group: 'Action', action: 'audio', keywords: 'sound mute' },
+  { label: 'GitHub', group: 'Link', href: site.links.github },
+  { label: 'LinkedIn', group: 'Link', href: site.links.linkedin },
+];
+---
+
+<dialog class="pal" aria-label="Command menu" data-email={site.email}>
+  <div class="pal__box">
+    <div class="pal__top">
+      <span class="mono pal__prompt" aria-hidden="true">&gt;</span>
+      <input
+        class="pal__input"
+        type="text"
+        role="combobox"
+        aria-expanded="true"
+        aria-controls="pal-list"
+        aria-autocomplete="list"
+        aria-label="Search pages, projects, and actions"
+        placeholder="Jump to a project, page, or action"
+        autocomplete="off"
+        spellcheck="false"
+      />
+      <button class="btn-text" type="button" data-pal-close>[esc]</button>
+    </div>
+    <ul class="pal__list" id="pal-list" role="listbox" aria-label="Results">
+      {
+        items.map((item, i) => (
+          <li
+            role="option"
+            id={`pal-${i}`}
+            aria-selected="false"
+            data-href={item.href}
+            data-action={item.action}
+            data-search={`${item.label} ${item.group} ${item.keywords ?? ''}`.toLowerCase()}
+          >
+            <span>{item.label}</span>
+            <span class="mono pal__group">{item.group}</span>
+          </li>
+        ))
+      }
+    </ul>
+    <p class="pal__empty mono" hidden>No matches.</p>
+    <p class="pal__help mono" aria-hidden="true">[↑↓] move · [enter] open · [esc] close</p>
+  </div>
+</dialog>
+
+<style>
+  .pal {
+    width: min(620px, calc(100vw - 32px));
+    max-height: min(560px, calc(100vh - 120px));
+    margin: 12vh auto auto;
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: var(--surface);
+    color: var(--text);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
+    overflow: hidden;
+  }
+  .pal::backdrop {
+    background: rgba(8, 8, 10, 0.55);
+    backdrop-filter: blur(3px);
+  }
+  .pal[open] {
+    animation: pal-in 0.16s var(--ease);
+  }
+  @keyframes pal-in {
+    from { opacity: 0; transform: translateY(-6px) scale(0.99); }
+  }
+  .pal__box {
+    display: flex;
+    flex-direction: column;
+    max-height: inherit;
+  }
+  .pal__top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .pal__prompt {
+    color: var(--accent-text);
+  }
+  .pal__input {
+    flex: 1;
+    min-width: 0;
+    border: 0;
+    background: none;
+    color: var(--text);
+    font: inherit;
+    font-size: 16px;
+    outline: none;
+  }
+  .pal__list {
+    list-style: none;
+    margin: 0;
+    padding: 6px;
+    overflow-y: auto;
+  }
+  .pal__list li {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  .pal__list li[hidden] {
+    display: none;
+  }
+  .pal__list li[aria-selected='true'] {
+    background: var(--surface-2);
+    box-shadow: inset 2px 0 0 var(--accent);
+  }
+  .pal__group {
+    color: var(--muted);
+    font-size: 12px;
+  }
+  .pal__empty,
+  .pal__help {
+    padding: 12px 18px;
+    color: var(--muted);
+  }
+  .pal__help {
+    border-top: 1px solid var(--border);
+    font-size: 11px;
+  }
+</style>
+
+<script>
+  import { copyText, toggleTheme, announce } from '../scripts/ui';
+  import { audioOn, setAudio } from '../scripts/audio';
+
+  const dlg = document.querySelector<HTMLDialogElement>('.pal')!;
+  const input = dlg.querySelector<HTMLInputElement>('.pal__input')!;
+  const options = [...dlg.querySelectorAll<HTMLLIElement>('[role="option"]')];
+  const empty = dlg.querySelector<HTMLElement>('.pal__empty')!;
+  let visible = options;
+  let active = 0;
+  let returnFocus: HTMLElement | null = null;
+
+  function highlight(i: number) {
+    options.forEach((o) => o.setAttribute('aria-selected', 'false'));
+    active = Math.max(0, Math.min(i, visible.length - 1));
+    const el = visible[active];
+    if (el) {
+      el.setAttribute('aria-selected', 'true');
+      input.setAttribute('aria-activedescendant', el.id);
+      el.scrollIntoView({ block: 'nearest' });
+    } else {
+      input.removeAttribute('aria-activedescendant');
+    }
+  }
+
+  function filter() {
+    const terms = input.value.toLowerCase().trim().split(/\s+/).filter(Boolean);
+    visible = options.filter((o) => {
+      const hit = terms.every((t) => o.dataset.search!.includes(t));
+      o.hidden = !hit;
+      return hit;
+    });
+    empty.hidden = visible.length > 0;
+    highlight(0);
+  }
+
+  function open() {
+    if (dlg.open) return;
+    returnFocus = document.activeElement as HTMLElement;
+    input.value = '';
+    filter();
+    dlg.showModal();
+    input.focus();
+  }
+
+  function close() {
+    dlg.close();
+  }
+
+  async function run(el: HTMLElement | undefined) {
+    if (!el) return;
+    const { href, action } = el.dataset;
+    close();
+    if (href) {
+      window.location.href = href;
+    } else if (action === 'theme') {
+      toggleTheme();
+    } else if (action === 'audio') {
+      setAudio(!audioOn());
+      announce(`Audio ${audioOn() ? 'on' : 'off'}`);
+    } else if (action === 'copy-email') {
+      const ok = await copyText(dlg.dataset.email || '');
+      announce(ok ? 'Email copied to clipboard' : 'Could not copy');
+    }
+  }
+
+  dlg.addEventListener('close', () => returnFocus?.focus());
+  input.addEventListener('input', filter);
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowDown') { e.preventDefault(); highlight(active + 1); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); highlight(active - 1); }
+    else if (e.key === 'Enter') { e.preventDefault(); run(visible[active]); }
+  });
+  options.forEach((o) => {
+    o.addEventListener('click', () => run(o));
+    o.addEventListener('pointermove', () => {
+      const i = visible.indexOf(o);
+      if (i !== active) highlight(i);
+    });
+  });
+  dlg.addEventListener('click', (e) => {
+    if (e.target === dlg) close(); // clicked the backdrop
+  });
+  dlg.querySelector('[data-pal-close]')!.addEventListener('click', close);
+  document.querySelectorAll('[data-palette-open]').forEach((b) => b.addEventListener('click', open));
+  document.addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+      e.preventDefault();
+      dlg.open ? close() : open();
+    }
+  });
+</script>

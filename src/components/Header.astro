@@ -1,0 +1,203 @@
+---
+import { nav, site } from '../site';
+
+const path = Astro.url.pathname;
+const isCurrent = (href: string) => path === href || path.startsWith(href);
+---
+
+<header class="hdr">
+  <div class="wrap hdr__in">
+    <a class="hdr__brand" href="/" aria-label="Wayne Simmons, home">
+      <svg class="hdr__mark" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M2 12h3l2-6 3 12 3-9 2 5 2-2h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+      </svg>
+      <span>Wayne Simmons</span>
+    </a>
+
+    <span class="chip" title={site.status}><i aria-hidden="true"></i><span>{site.status}</span></span>
+
+    <div class="hdr__panel" id="hdr-panel">
+      <nav aria-label="Main">
+        <ul>
+          {
+            nav.map((item) => (
+              <li>
+                <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>
+                  <span class="n">[{item.n}]</span> {item.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+      <div class="hdr__tools">
+        <button class="btn-text" type="button" data-audio-toggle aria-pressed="false" aria-label="Sound effects">
+          [audio: <span class="when-audio-on">on</span><span class="when-audio-off">off</span>]
+        </button>
+        <button class="btn-text" type="button" data-theme-toggle aria-label="Toggle light and dark theme">
+          [theme: <span class="when-dark">dark</span><span class="when-light">light</span>]
+        </button>
+        <button class="btn-text" type="button" data-palette-open aria-keyshortcuts="Meta+K Control+K">
+          [<span class="kbd-mod">⌘</span>K]<span class="sr-only"> Open command menu</span>
+        </button>
+      </div>
+    </div>
+
+    <a class="btn btn--accent hdr__resume" href={site.resume}>Resume</a>
+    <button class="btn-text hdr__menu" type="button" aria-expanded="false" aria-controls="hdr-panel">
+      [<span class="when-closed">menu</span><span class="when-open">X</span>]<span class="sr-only"> navigation</span>
+    </button>
+  </div>
+</header>
+
+<style>
+  .hdr {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background: color-mix(in srgb, var(--bg) 82%, transparent);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .hdr__in {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    min-height: 64px;
+  }
+  .hdr__brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .hdr__mark {
+    width: 22px;
+    height: 22px;
+    color: var(--accent);
+  }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 10px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .chip i {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--ok);
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--ok) 60%, transparent);
+    animation: ping 2.4s ease-out infinite;
+  }
+  @keyframes ping {
+    0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--ok) 55%, transparent); }
+    70%, 100% { box-shadow: 0 0 0 7px transparent; }
+  }
+  .hdr__panel {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-left: auto;
+  }
+  nav ul {
+    display: flex;
+    gap: 18px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  nav a {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    text-decoration: none;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  nav a:hover,
+  nav a[aria-current='page'] {
+    color: var(--text);
+  }
+  nav a[aria-current='page'] .n {
+    color: var(--accent-text);
+  }
+  .hdr__tools {
+    display: flex;
+    gap: 10px;
+    padding-left: 18px;
+    border-left: 1px solid var(--border);
+  }
+  .hdr__resume {
+    padding: 8px 14px;
+  }
+  .hdr__menu {
+    display: none;
+  }
+  :global([data-audio='on']) .when-audio-off,
+  :global([data-audio='off']) .when-audio-on,
+  :global([data-theme='light']) .when-dark,
+  :global(:root:not([data-theme='light'])) .when-light,
+  .when-open,
+  .hdr__menu[aria-expanded='true'] .when-closed {
+    display: none;
+  }
+  .hdr__menu[aria-expanded='true'] .when-open {
+    display: inline;
+  }
+
+  @media (max-width: 1080px) {
+    .hdr__menu {
+      display: inline-block;
+    }
+    .hdr__resume {
+      margin-left: auto;
+    }
+    .hdr__panel {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+      padding: 8px var(--gutter) 20px;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+    }
+    .hdr__panel[data-open] {
+      display: flex;
+    }
+    nav ul {
+      flex-direction: column;
+      gap: 0;
+    }
+    nav a {
+      display: block;
+      padding: 14px 0;
+      font-size: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .hdr__tools {
+      border-left: 0;
+      padding: 16px 0 0;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+  }
+  @media (max-width: 640px) {
+    .chip {
+      display: none;
+    }
+  }
+</style>

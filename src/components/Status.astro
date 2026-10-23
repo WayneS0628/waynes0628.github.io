@@ -1,0 +1,9 @@
+---
+interface Props {
+  status: 'shipped' | 'training' | 'planned';
+}
+const { status } = Astro.props;
+const label = { shipped: 'Shipped', training: 'Training', planned: 'Planned' }[status];
+---
+
+<span class={`status status--${status}`}>{label}</span>

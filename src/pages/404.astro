@@ -1,0 +1,40 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="Not found">
+  <section class="wrap page">
+    <p class="label"><b>[404]</b> Noise</p>
+    <h1 class="page__title">Nothing here but noise.</h1>
+    <p class="page__lede">That page doesn't exist, or it moved when the site was rebuilt.</p>
+    <div class="actions">
+      <a class="btn btn--accent" href="/">Back to the signal</a>
+      <a class="btn" href="/work/">[01] Work</a>
+      <button class="btn" type="button" data-palette-open>Search [<span class="kbd-mod">⌘</span>K]</button>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .page {
+    padding-block: clamp(64px, 12vw, 160px);
+    min-height: 70vh;
+  }
+  .page__title {
+    margin-top: 16px;
+    font-size: clamp(44px, 8vw, 104px);
+    letter-spacing: -0.045em;
+    max-width: 14ch;
+  }
+  .page__lede {
+    margin-top: 20px;
+    color: var(--muted);
+    font-size: 19px;
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 32px;
+  }
+</style>

@@ -1,0 +1,110 @@
+---
+import { site } from '../site';
+interface Props {
+  as?: 'h1' | 'h2';
+}
+const { as: Heading = 'h2' } = Astro.props;
+---
+
+<div class="contact">
+  <p class="label"><b>[04]</b> Contact</p>
+  <Heading class="contact__title">Let's talk signal.</Heading>
+  <p class="contact__lede">
+    Internships, research, a project you think I'd be into, or just a good playlist. My inbox is open.
+  </p>
+
+  <div class="contact__grid">
+    <div class="contact__cell">
+      <span class="label">Email</span>
+      {
+        site.email ? (
+          <button class="contact__copy" type="button" data-copy={site.email}>
+            <span class="contact__addr">{site.email}</span>
+            <span class="mono contact__state">
+              [<span data-copy-label>click to copy</span>]
+            </span>
+          </button>
+        ) : (
+          <span class="todo">TODO: Wayne: add your email in src/site.ts</span>
+        )
+      }
+    </div>
+    <div class="contact__cell">
+      <span class="label">Elsewhere</span>
+      <span class="contact__links">
+        <a href={site.links.linkedin} rel="me">LinkedIn ↗</a>
+        <a href={site.links.github} rel="me">GitHub ↗</a>
+      </span>
+    </div>
+    <div class="contact__cell">
+      <span class="label">Local time, Queens NY</span>
+      <span class="mono contact__clock" data-clock>--:--:--</span>
+    </div>
+  </div>
+</div>
+
+<style>
+  .contact__title {
+    font-size: clamp(40px, 7vw, 88px);
+    margin-top: 16px;
+  }
+  .contact__lede {
+    max-width: 52ch;
+    margin-top: 20px;
+    color: var(--muted);
+    font-size: 19px;
+  }
+  .contact__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    margin-top: 48px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .contact__cell {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 22px 24px;
+    background: var(--surface);
+    box-shadow: 1px 1px 0 var(--border);
+  }
+  .contact__copy {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+    text-align: left;
+  }
+  .contact__addr {
+    font-size: 18px;
+    word-break: break-all;
+  }
+  .contact__copy:hover .contact__addr {
+    color: var(--accent-text);
+  }
+  .contact__state {
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .contact__copy[data-copied] .contact__state {
+    color: var(--ok);
+  }
+  .contact__links {
+    display: flex;
+    gap: 20px;
+    font-size: 18px;
+  }
+  .contact__links a {
+    text-decoration: none;
+  }
+  .contact__clock {
+    font-size: 22px;
+    font-variant-numeric: tabular-nums;
+  }
+</style>
