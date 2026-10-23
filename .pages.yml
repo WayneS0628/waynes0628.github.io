@@ -20,7 +20,7 @@ content:
       layout: tree
       node:
         filename: index.md
-        hideDirs: others
+        hideDirs: nodes # hide the per-entry folders; the entries themselves are listed
       fields: [title, status, featured, date]
       primary: title
       sort: date
@@ -76,7 +76,7 @@ content:
       layout: tree
       node:
         filename: index.md
-        hideDirs: others
+        hideDirs: nodes # hide the per-entry folders; the entries themselves are listed
       fields: [title, date]
       primary: title
       sort: date
