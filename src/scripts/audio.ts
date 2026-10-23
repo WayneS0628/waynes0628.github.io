@@ -1,9 +1,13 @@
-// UI sound. Off by default; the choice is remembered per visitor.
-// Ticks are synthesized with Web Audio, so there are no files to load.
+// UI sound and background music. Off by default; the choice is remembered per
+// visitor. Ticks are synthesized with Web Audio, so there are no files to load.
+//
+// This module runs once per visit: the site navigates client-side (Astro's
+// ClientRouter), so the AudioContext and the music survive page changes.
 
 const root = document.documentElement;
 let ctx: AudioContext | null = null;
 let ambient: HTMLAudioElement | null = null;
+let lofi: { start(): void; stop(): void } | null = null;
 let lastHover = 0;
 
 export const audioOn = () => root.dataset.audio === 'on';
@@ -21,7 +25,7 @@ function context(): AudioContext | null {
 export function tick(kind: 'hover' | 'click' = 'hover') {
   if (!audioOn()) return;
   const c = context();
-  if (!c) return;
+  if (!c || c.state !== 'running') return;
   const t = c.currentTime;
   const osc = c.createOscillator();
   const gain = c.createGain();
@@ -37,34 +41,38 @@ export function tick(kind: 'hover' | 'click' = 'hover') {
   osc.stop(t + 0.1);
 }
 
-let lofi: { start(): void; stop(): void } | null = null;
+// Fetch the lofi engine ahead of time so turning audio on starts it instantly.
+let lofiModule: Promise<typeof import('./lofi')> | null = null;
+const loadLofi = () => (lofiModule ??= import('./lofi'));
 
 // Background music: a recorded loop if one is configured (site.ambient),
-// otherwise the generative lofi loop, loaded on first use.
-async function syncAmbient() {
+// otherwise the generative lofi loop. Must be called from a user gesture the
+// first time, because browsers block audio until the visitor interacts.
+async function syncMusic() {
   const src = root.dataset.ambient;
   if (src) {
     if (audioOn()) {
       ambient ??= Object.assign(new Audio(src), { loop: true, volume: 0.25 });
-      ambient.play().catch(() => {
-        /* blocked until the next user gesture */
-      });
+      ambient.play().catch(() => {});
     } else {
       ambient?.pause();
     }
     return;
   }
-  if (audioOn()) {
-    const c = context();
-    if (!c) return;
-    if (!lofi) {
-      const { createLofi } = await import('./lofi');
-      lofi = createLofi(c);
-    }
-    if (audioOn()) lofi.start();
-  } else {
+  if (!audioOn()) {
     lofi?.stop();
+    return;
   }
+  const c = context();
+  if (!c) return;
+  if (!lofi) lofi = (await loadLofi()).createLofi(c);
+  if (audioOn()) lofi.start();
+}
+
+function syncButtons() {
+  document
+    .querySelectorAll('[data-audio-toggle]')
+    .forEach((b) => b.setAttribute('aria-pressed', String(audioOn())));
 }
 
 export function setAudio(on: boolean) {
@@ -72,31 +80,44 @@ export function setAudio(on: boolean) {
   try {
     localStorage.setItem('audio', on ? 'on' : 'off');
   } catch {}
-  document.querySelectorAll('[data-audio-toggle]').forEach((b) => b.setAttribute('aria-pressed', String(on)));
-  syncAmbient();
+  syncButtons();
+  syncMusic();
   tick('click');
 }
 
 export function initAudio() {
-  document.querySelectorAll('[data-audio-toggle]').forEach((b) => {
-    b.setAttribute('aria-pressed', String(audioOn()));
-    b.addEventListener('click', () => setAudio(!audioOn()));
+  // Event delegation, so the header buttons keep working after page swaps.
+  document.addEventListener('click', (e) => {
+    const el = (e.target as Element).closest('a, button, [role="option"], [data-tick]');
+    if (!el) return;
+    if (el.hasAttribute('data-audio-toggle')) setAudio(!audioOn());
+    else tick('click');
   });
 
-  const interactive = 'a, button, [role="option"], [data-tick]';
   document.addEventListener('pointerover', (e) => {
     if (e.pointerType !== 'mouse') return;
-    const el = (e.target as Element).closest(interactive);
+    const el = (e.target as Element).closest('a, button, [role="option"], [data-tick]');
     if (!el || el.contains(e.relatedTarget as Node)) return;
     const now = performance.now();
     if (now - lastHover < 45) return;
     lastHover = now;
     tick('hover');
   });
-  document.addEventListener('click', (e) => {
-    const el = (e.target as Element).closest(interactive);
-    if (el && !el.hasAttribute('data-audio-toggle')) tick('click');
-  });
-  // Browsers block audio until a gesture, so resume the ambient loop on the first one.
-  document.addEventListener('pointerdown', syncAmbient, { once: true });
+
+  document.addEventListener('astro:page-load', syncButtons);
+
+  // The engine is tiny (~4 KB); fetch it once the page is idle so the first
+  // toggle starts music immediately.
+  setTimeout(loadLofi, 1500);
+
+  if (audioOn()) {
+    loadLofi();
+    // Returning visitor with audio on: start on their very first interaction
+    // (any click, tap, or key), since browsers won't allow it before that.
+    const start = () => {
+      ['pointerdown', 'keydown', 'touchstart'].forEach((t) => document.removeEventListener(t, start, true));
+      syncMusic();
+    };
+    ['pointerdown', 'keydown', 'touchstart'].forEach((t) => document.addEventListener(t, start, true));
+  }
 }

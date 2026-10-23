@@ -168,9 +168,9 @@ export function createLofi(ctx: AudioContext) {
       const now = ctx.currentTime;
       master.gain.cancelScheduledValues(now);
       master.gain.setValueAtTime(master.gain.value, now);
-      master.gain.linearRampToValueAtTime(VOLUME, now + 2.5);
+      master.gain.linearRampToValueAtTime(VOLUME, now + 0.5);
       step = 0;
-      next = now + 0.1;
+      next = now + 0.03;
       tick();
       timer = window.setInterval(tick, 25);
     },
@@ -181,7 +181,7 @@ export function createLofi(ctx: AudioContext) {
       const now = ctx.currentTime;
       master.gain.cancelScheduledValues(now);
       master.gain.setValueAtTime(master.gain.value, now);
-      master.gain.linearRampToValueAtTime(0, now + 0.8);
+      master.gain.linearRampToValueAtTime(0, now + 0.4);
     },
   };
 }

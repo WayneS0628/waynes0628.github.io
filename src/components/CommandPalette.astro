@@ -25,7 +25,7 @@ const items: Item[] = [
 ];
 ---
 
-<dialog class="pal" aria-label="Command menu" data-email={site.email}>
+<dialog class="pal" aria-label="Command menu" data-email={site.email} transition:persist="palette">
   <div class="pal__box">
     <div class="pal__top">
       <span class="mono pal__prompt" aria-hidden="true">&gt;</span>
@@ -150,6 +150,7 @@ const items: Item[] = [
 </style>
 
 <script>
+  import { navigate } from 'astro:transitions/client';
   import { copyText, toggleTheme, announce } from '../scripts/ui';
   import { audioOn, setAudio } from '../scripts/audio';
 
@@ -202,7 +203,9 @@ const items: Item[] = [
     if (!el) return;
     const { href, action } = el.dataset;
     close();
-    if (href) {
+    if (href?.startsWith('/') && !href.endsWith('.pdf')) {
+      navigate(href); // client-side, so background music keeps playing
+    } else if (href) {
       window.location.href = href;
     } else if (action === 'theme') {
       toggleTheme();
@@ -233,7 +236,11 @@ const items: Item[] = [
     if (e.target === dlg) close(); // clicked the backdrop
   });
   dlg.querySelector('[data-pal-close]')!.addEventListener('click', close);
-  document.querySelectorAll('[data-palette-open]').forEach((b) => b.addEventListener('click', open));
+  // Delegated: the buttons that open the palette are re-rendered on every page,
+  // while this dialog persists across client-side navigation.
+  document.addEventListener('click', (e) => {
+    if ((e.target as Element).closest('[data-palette-open]')) open();
+  });
   document.addEventListener('keydown', (e) => {
     if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
       e.preventDefault();

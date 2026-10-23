@@ -200,7 +200,9 @@ const show = (user && apiKey) || import.meta.env.DEV;
 <script>
   type Track = { name: string; artist: string; image?: string; url: string; now: boolean; uts?: number };
 
-  const el = document.querySelector<HTMLElement>('.np');
+  // The player only exists on the homepage, and client-side navigation
+  // re-renders it, so look it up fresh each time instead of caching it.
+  const player = () => document.querySelector<HTMLElement>('.np');
   // Last.fm's grey star placeholder, used when it has no album art
   const PLACEHOLDER = '2a96cbd8b46e442fc41c2b86b821562f';
   const rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
@@ -213,6 +215,7 @@ const show = (user && apiKey) || import.meta.env.DEV;
   }
 
   function render(t: Track, prev?: Track) {
+    const el = player();
     if (!el) return;
     const img = el.querySelector('img')!;
     const art = t.image && !t.image.includes(PLACEHOLDER) ? t.image : '';
@@ -238,6 +241,7 @@ const show = (user && apiKey) || import.meta.env.DEV;
   }
 
   async function load() {
+    const el = player();
     const user = el?.dataset.user;
     const key = el?.dataset.key;
     if (!user || !key || document.hidden) return;
@@ -265,10 +269,10 @@ const show = (user && apiKey) || import.meta.env.DEV;
     }
   }
 
-  if (el) {
-    load();
-    setInterval(load, 60_000);
-    document.addEventListener('visibilitychange', load);
-    if (import.meta.env.DEV) (window as any).__nowPlaying = render; // for previewing without an account
-  }
+  // Refresh on every page load (including client-side navigation back home),
+  // every minute while visible, and when the tab comes back into view.
+  document.addEventListener('astro:page-load', load);
+  setInterval(load, 60_000);
+  document.addEventListener('visibilitychange', load);
+  if (import.meta.env.DEV) (window as any).__nowPlaying = render; // for previewing without an account
 </script>
