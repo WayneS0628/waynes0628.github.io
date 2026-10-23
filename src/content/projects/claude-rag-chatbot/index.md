@@ -28,5 +28,3 @@ Streamlit reruns the whole script on every interaction, so chat history has to l
 ## What's next
 
 Right now it sends the whole document every turn. Once the files get big, the router gets replaced with chunking, embeddings, and top-k similarity search. Retrieval changes; steps 2 and 3 stay exactly the same.
-
-<span class="todo">TODO: Wayne: add the summarization and document Q&A versions here if you want them on the site.</span>

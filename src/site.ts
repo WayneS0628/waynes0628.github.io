@@ -7,10 +7,8 @@ export const site = {
   description:
     "I'm Wayne, an ML engineer in Queens building AI that finds what matters in messy data, and someday protects the people it's about.",
   status: 'Open to 2027 ML internships',
-  // TODO: Wayne. The address shown in the click-to-copy button.
-  email: '',
-  // TODO: Wayne. Drop your resume at public/resume.pdf (or change this path).
-  resume: '/resume.pdf',
+  email: 'waynesimmonsjr@icloud.com',
+  resume: '/resume.pdf', // the file lives at public/resume.pdf
   links: {
     github: 'https://github.com/WayneS0628',
     linkedin: 'https://www.linkedin.com/in/wayne-simmons-56808b201/',
@@ -25,7 +23,7 @@ export const site = {
 export const stats: { value: string; label: string }[] = [
   { value: '4 yrs', label: 'at Apple Retail' },
   { value: '2027', label: 'CS grad, Queens College' },
-  // TODO: Wayne. Add more real numbers here (e.g. a CUAD result once public).
+  { value: '4,300+', label: 'applied to Break Through Tech AI. I got in.' },
 ];
 
 export const nav = [
