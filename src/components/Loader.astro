@@ -1,7 +1,7 @@
 ---
 // First-visit intro (homepage, once per session), in four stages:
 //   1. train   `wayne.fit(problems, target="done")`: noise resolves into a clean wave, then "✓ done"
-//   2. gate    [enter with sound] / [enter without sound] (the click unlocks browser audio)
+//   2. gate    [enter with sound] (pre-selected) / [enter without sound]; the click unlocks browser audio
 //   3. reveal  "Wayne Simmons" over the dimmed site, subtitle fades in
 //   4. settle  the name floats into the header brand, the subtitle into the hero h1
 // Shown only while the inline script in Base.astro has added .is-loading.
@@ -151,8 +151,8 @@
     color: var(--text);
     border-color: var(--accent);
   }
-  /* The visitor's last choice is pre-selected */
-  .fit__choice.is-last {
+  /* "With sound" is pre-selected */
+  .fit__choice.is-default {
     background: var(--accent);
     border-color: var(--accent);
     color: #0e0f11;
@@ -310,14 +310,11 @@
     const picked = new Promise<boolean>((r) => (pick = r));
 
     function openGate() {
-      let last = 'off';
-      try {
-        last = localStorage.getItem('audio') === 'on' ? 'on' : 'off';
-      } catch {}
-      const buttons = [...gate.querySelectorAll<HTMLButtonElement>('.fit__choice')];
-      buttons.forEach((b) => b.classList.toggle('is-last', b.dataset.sound === last));
+      // Always pre-select and focus "with sound", so Enter starts the music.
+      const sound = gate.querySelector<HTMLButtonElement>('[data-sound="on"]')!;
+      sound.classList.add('is-default');
       gate.hidden = false;
-      buttons.find((b) => b.dataset.sound === last)!.focus();
+      sound.focus();
     }
 
     gate.addEventListener('click', (e) => {
