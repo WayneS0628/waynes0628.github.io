@@ -12,7 +12,7 @@ Phases 0, 1, and 2 are live on waynesimmonsjr.com (Astro, deployed by GitHub Act
 - Audio fixes (instant start, music keeps playing across pages via client-side navigation) and Last.fm turned on: PR #5
 - Content pass (About page, first post, this spec): PR #6
 - CLAUDE.md for future sessions, MarianMT removed, CleanTube back on the homepage: PR #8
-- **Rebrand to "I build AI to get things done."** (in progress): the identity moves from "Signal over noise" to the five verbs in section 2, with a new first-visit intro (training run, sound gate, name reveal). Branch `rebrand-done`.
+- **Rebrand to "I build AI to get things done."** (in progress): the identity moves from "Signal over noise" to the five verbs in section 2, with a new first-visit intro (training run, sound gate, name reveal): PR #9.
 
 Sections 1 to 8 below are the original brief, edited where decisions changed. How to edit content: `EDITING.md`.
 
