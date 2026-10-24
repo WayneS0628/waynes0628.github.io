@@ -44,6 +44,7 @@ const links = [
     <section class="spec" aria-label="Model card">
       <p class="label spec__label"><b>[model card]</b></p>
       <dl>
+        {d.outcome && <div class="spec__outcome"><dt class="label">Gets done</dt><dd><Val value={d.outcome} /></dd></div>}
         <div><dt class="label">Task</dt><dd><Val value={d.task} /></dd></div>
         <div><dt class="label">Data</dt><dd><Val value={d.data} /></dd></div>
         <div><dt class="label">Model</dt><dd><Val value={d.model} /></dd></div>
@@ -152,6 +153,19 @@ const links = [
   }
   .spec dd {
     margin: 0;
+  }
+  /* "Gets done" leads the card and spans the full row */
+  .spec__outcome {
+    grid-column: 1 / -1;
+    padding-bottom: 16px;
+    border-bottom: 1px dashed var(--border);
+  }
+  .spec__outcome dt {
+    color: var(--accent-text);
+  }
+  .spec__outcome dd {
+    font-size: clamp(18px, 2vw, 22px);
+    font-weight: 500;
   }
   .spec__metric {
     color: var(--accent-text);

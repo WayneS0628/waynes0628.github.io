@@ -60,11 +60,15 @@ const ogImage = image ? new URL(image, Astro.site).href : undefined;
         d.setAttribute('data-theme', t);
         d.setAttribute('data-audio', a === 'on' ? 'on' : 'off');
         try { seen = sessionStorage.getItem('fit-done') === '1'; } catch (e) {}
-        var still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        if (d.hasAttribute('data-loader') && !seen && !still) {
+        // First homepage visit of the session: run the intro (Loader.astro).
+        // Reduced motion still gets it, just without animation, for the sound gate.
+        if (d.hasAttribute('data-loader') && !seen) {
           d.classList.add('is-loading');
-          // Safety net: never trap the page behind the loader if its script fails.
-          setTimeout(function () { d.classList.remove('is-loading'); }, 3000);
+          // Safety net: if the intro script never starts (JS failed or blocked),
+          // drop the overlay. Once it starts it sets data-intro and owns the timing.
+          setTimeout(function () {
+            if (!d.hasAttribute('data-intro')) d.classList.remove('is-loading');
+          }, 4000);
         }
       })();
     </script>

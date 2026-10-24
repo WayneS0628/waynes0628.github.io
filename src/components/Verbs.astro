@@ -1,0 +1,126 @@
+---
+// "What done looks like": the five verbs, each with its proof. Projects are
+// pulled in automatically by their `verb` frontmatter field.
+import { getCollection } from 'astro:content';
+
+const projects = (await getCollection('projects', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+);
+const proof = (verb: string) =>
+  projects.filter((p) => p.data.verb === verb).map((p) => ({ label: p.data.title, href: `/work/${p.id}/` }));
+
+type Link = { label: string; href: string };
+const verbs: { key: string; verb: string; meaning: string; links: Link[]; next?: string }[] = [
+  { key: 'find', verb: 'Find', meaning: 'Pull insight out of messy data.', links: proof('find') },
+  { key: 'answer', verb: 'Answer', meaning: 'Inform people with grounded answers.', links: proof('answer') },
+  { key: 'simplify', verb: 'Simplify', meaning: 'Make life easier.', links: proof('simplify') },
+  {
+    key: 'anticipate',
+    verb: 'Anticipate',
+    meaning: 'Act before you have to ask.',
+    links: proof('anticipate'),
+    next: 'An agentic project from my Nov–Dec 2026 sprint.',
+  },
+  {
+    key: 'delight',
+    verb: 'Delight',
+    meaning: 'Do cool things.',
+    links: [
+      ...proof('delight'),
+      { label: 'This site: live lofi and a latent-space map', href: '#map' },
+      { label: 'Signal was one verb', href: '/writing/signal-was-one-verb/' },
+    ],
+  },
+];
+---
+
+<ol class="verbs">
+  {
+    verbs.map((v, i) => (
+      <li class="verb">
+        <p class="label verb__top">
+          <b>[{String(i + 1).padStart(2, '0')}]</b>
+          {v.key}
+          {v.next && !v.links.length && <span class="verb__next">[next]</span>}
+        </p>
+        <h3 class="verb__name">{v.verb}</h3>
+        <p class="verb__meaning">{v.meaning}</p>
+        {v.links.length > 0 ? (
+          <ul class="verb__proof">
+            {v.links.map((l) => (
+              <li>
+                <a href={l.href}>{l.label}</a>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          v.next && <p class="verb__soon">{v.next}</p>
+        )}
+      </li>
+    ))
+  }
+</ol>
+
+<style>
+  .verbs {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+    gap: 1px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--border); /* the 1px gaps become hairlines */
+    overflow: hidden;
+  }
+  .verb {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 24px 22px;
+    background: var(--surface);
+  }
+  .verb__top {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .verb__next {
+    margin-left: auto;
+    padding: 2px 8px;
+    border: 1px dashed var(--accent);
+    border-radius: 999px;
+    color: var(--accent-text);
+  }
+  .verb__name {
+    font-size: clamp(26px, 2.6vw, 32px);
+    letter-spacing: -0.03em;
+  }
+  .verb__meaning {
+    color: var(--muted);
+  }
+  .verb__proof {
+    display: grid;
+    gap: 6px;
+    margin: auto 0 0;
+    padding: 14px 0 0;
+    list-style: none;
+    border-top: 1px dashed var(--border);
+    font-size: 14px;
+  }
+  .verb__proof a {
+    text-decoration: none;
+  }
+  .verb__proof a::before {
+    content: '→ ';
+    color: var(--accent-text);
+  }
+  .verb__soon {
+    margin-top: auto;
+    padding-top: 14px;
+    border-top: 1px dashed var(--border);
+    font-size: 14px;
+    color: var(--muted);
+  }
+</style>

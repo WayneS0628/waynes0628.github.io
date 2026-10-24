@@ -1,18 +1,36 @@
 ---
-// First-visit "training run". Shown only when the inline script in Base.astro
-// adds .is-loading (homepage, first visit this session, motion allowed).
+// First-visit intro (homepage, once per session), in four stages:
+//   1. train   `wayne.fit(problems, target="done")`: noise resolves into a clean wave, then "✓ done"
+//   2. gate    [enter with sound] / [enter without sound] (the click unlocks browser audio)
+//   3. reveal  "Wayne Simmons" over the dimmed site, subtitle fades in
+//   4. settle  the name floats into the header brand, the subtitle into the hero h1
+// Shown only while the inline script in Base.astro has added .is-loading.
+// Esc or [skip] works at every stage; skipping before choosing = without sound.
 ---
 
-<div class="fit" role="status" aria-label="Loading">
-  <div class="fit__term mono">
-    <p><span class="fit__prompt">&gt;&gt;&gt;</span> wayne.fit(data=noise, epochs=1)</p>
-    <p class="fit__stats">
-      step <span data-step>0000</span>/1200 · loss <span data-loss>2.3026</span>
-    </p>
-    <div class="fit__bar"><i></i></div>
+<div class="fit" role="dialog" aria-modal="true" aria-label="Intro" data-stage="train">
+  <div class="fit__run">
+    <div class="fit__term mono" aria-live="polite">
+      <p><span class="fit__prompt">&gt;&gt;&gt;</span> wayne.fit(problems, target="done")</p>
+      <p class="fit__stats">
+        step <span data-step>0000</span>/1200 · loss <span data-loss>2.3026</span>
+      </p>
+      <div class="fit__bar"><i></i></div>
+      <p class="fit__done" hidden><span class="fit__check">✓</span> done</p>
+    </div>
+    <canvas class="fit__wave" aria-hidden="true"></canvas>
+    <div class="fit__gate" hidden>
+      <button class="fit__choice" type="button" data-sound="on">[enter with sound]</button>
+      <button class="fit__choice" type="button" data-sound="off">[enter without sound]</button>
+    </div>
   </div>
-  <canvas class="fit__wave" aria-hidden="true"></canvas>
-  <button class="btn-text fit__skip" type="button">[esc] Skip</button>
+
+  <div class="fit__reveal" aria-hidden="true">
+    <p class="fit__name">Wayne Simmons</p>
+    <p class="fit__sub">I build AI to get things done</p>
+  </div>
+
+  <button class="btn-text fit__skip" type="button">[esc] skip</button>
 </div>
 
 <style>
@@ -24,21 +42,49 @@
     inset: 0;
     z-index: 100;
     display: grid;
-    grid-template-rows: 1fr auto 1fr;
-    align-items: center;
+    place-items: center;
     background: var(--bg);
-    transition: opacity 0.35s var(--ease);
+    transition: background-color 0.5s var(--ease), opacity 0.25s var(--ease);
   }
   :global(.is-loading) body {
     overflow: hidden;
   }
-  .fit.fit--out {
+  /* While the intro runs, the header name and hero h1 wait for the float-in.
+     Fully :global, since these elements belong to other components. */
+  :global(.is-loading .hdr__brand span),
+  :global(.is-loading:not(.intro-landing) .hero__title) {
     opacity: 0;
   }
+
+  .fit--out {
+    opacity: 0;
+  }
+  .fit[data-stage='reveal'] {
+    background: color-mix(in srgb, var(--bg) 84%, transparent);
+  }
+  .fit[data-stage='settle'] {
+    background: transparent;
+    transition-duration: 0.9s;
+  }
+
+  .fit__run,
+  .fit__reveal {
+    grid-area: 1 / 1;
+    width: 100%;
+  }
+  .fit__run {
+    display: grid;
+    gap: 24px;
+    justify-items: center;
+    transition: opacity 0.3s var(--ease);
+  }
+  .fit:not([data-stage='train']):not([data-stage='gate']) .fit__run {
+    opacity: 0;
+    pointer-events: none;
+  }
+
   .fit__term {
-    align-self: end;
     width: min(560px, calc(100% - 32px));
-    margin: 0 auto 28px;
     color: var(--muted);
   }
   .fit__term p + p {
@@ -62,38 +108,141 @@
     width: 0;
     background: linear-gradient(90deg, var(--accent), var(--accent-2));
   }
+  .fit__done {
+    margin-top: 14px !important;
+    color: var(--text);
+    animation: pop 0.35s var(--ease);
+  }
+  .fit__check {
+    color: var(--ok);
+  }
+  @keyframes pop {
+    from { opacity: 0; transform: translateY(4px); }
+  }
   .fit__wave {
     width: 100%;
-    height: clamp(120px, 26vh, 240px);
+    height: clamp(110px, 24vh, 220px);
   }
+
+  .fit__gate {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    padding-inline: 16px;
+    animation: pop 0.35s var(--ease);
+  }
+  .fit__gate[hidden] {
+    display: none;
+  }
+  .fit__choice {
+    padding: 12px 18px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--surface);
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 14px;
+    cursor: pointer;
+    transition: border-color 0.2s var(--ease), color 0.2s var(--ease), background 0.2s var(--ease);
+  }
+  .fit__choice:hover,
+  .fit__choice:focus-visible {
+    color: var(--text);
+    border-color: var(--accent);
+  }
+  /* The visitor's last choice is pre-selected */
+  .fit__choice.is-last {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #0e0f11;
+  }
+
+  .fit__reveal {
+    text-align: center;
+    padding-inline: 16px;
+    pointer-events: none;
+  }
+  .fit__name,
+  .fit__sub {
+    /* shrink to the text so the float measures the words, not the full row */
+    width: fit-content;
+    margin-inline: auto;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.6s var(--ease), transform 0.6s var(--ease);
+  }
+  .fit__name {
+    font-size: clamp(40px, 10vw, 128px);
+    font-weight: 600;
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+  .fit__sub {
+    margin-top: 18px;
+    font-size: clamp(18px, 2.6vw, 30px);
+    letter-spacing: -0.02em;
+    color: var(--muted);
+    transition-delay: 0.45s;
+  }
+  .fit[data-stage='reveal'] .fit__name,
+  .fit[data-stage='reveal'] .fit__sub,
+  .fit[data-stage='settle'] .fit__name,
+  .fit[data-stage='settle'] .fit__sub {
+    opacity: 1;
+    transform: none;
+  }
+  .fit[data-stage='settle'] .fit__sub {
+    transition-delay: 0s;
+  }
+
   .fit__skip {
-    align-self: start;
-    justify-self: center;
-    margin-top: 28px;
+    position: fixed;
+    right: 20px;
+    bottom: 18px;
   }
 </style>
 
 <script>
   import { signal } from '../lib/wave';
+  import { setAudio } from '../scripts/audio';
+
+  // Stage timings (ms)
+  const TRAIN = 3900; // training run
+  const DONE_HOLD = 500; // "✓ done" on screen before the sound gate
+  const REVEAL_IN = 1050; // name fades in, subtitle follows 450 ms later (600 ms each)
+  const HOLD = 1100; // name + subtitle hold before settling
+  const SETTLE = 900; // float into header and hero
+  const STILL_HOLD = 700; // reduced motion: hold, then a quick fade instead of the float
 
   const root = document.documentElement;
   const el = document.querySelector<HTMLElement>('.fit');
 
   if (el && root.classList.contains('is-loading')) {
-    const canvas = el.querySelector('canvas')!;
-    const g = canvas.getContext('2d');
-    const stepEl = el.querySelector<HTMLElement>('[data-step]')!;
-    const lossEl = el.querySelector<HTMLElement>('[data-loss]')!;
-    const bar = el.querySelector<HTMLElement>('.fit__bar i')!;
-    const DURATION = 1900;
-    const STEPS = 1200;
-    let start = 0;
-    let done = false;
-
+    root.setAttribute('data-intro', ''); // tells Base.astro's safety net we're running
     try {
       sessionStorage.setItem('fit-done', '1');
     } catch {}
 
+    const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
+    let stage = 'train';
+    let chosen = false;
+    let ended = false;
+
+    const $ = <T extends HTMLElement>(s: string) => el.querySelector<T>(s)!;
+    const canvas = $<HTMLCanvasElement>('.fit__wave');
+    const g = canvas.getContext('2d');
+    const gate = $('.fit__gate');
+    const name = $('.fit__name');
+    const sub = $('.fit__sub');
+
+    const setStage = (s: string) => {
+      stage = s;
+      el.dataset.stage = s;
+    };
+
+    // ---- 1. Training run ----------------------------------------------------
     const css = getComputedStyle(root);
     const c1 = css.getPropertyValue('--accent').trim() || '#ff4d1f';
     const c2 = css.getPropertyValue('--accent-2').trim() || '#ff8a3d';
@@ -119,46 +268,157 @@
       g.lineWidth = Math.max(1.5, w / 900);
       g.lineJoin = 'round';
       g.beginPath();
-      const n = 240;
-      for (let i = 0; i <= n; i++) {
-        const x = i / n;
+      for (let i = 0; i <= 240; i++) {
+        const x = i / 240;
         const y = mid - (signal(x) * (0.35 + 0.65 * p) + (Math.random() * 2 - 1) * noise * 0.9) * amp;
         i ? g.lineTo(x * w, y) : g.moveTo(x * w, y);
       }
       g.stroke();
     }
 
-    function finish() {
-      if (done) return;
-      done = true;
-      el!.classList.add('fit--out');
-      window.removeEventListener('keydown', onKey);
-      setTimeout(() => root.classList.remove('is-loading'), 350);
+    function train(): Promise<void> {
+      const stepEl = $('[data-step]');
+      const lossEl = $('[data-loss]');
+      const bar = $('.fit__bar i');
+      const show = (t: number) => {
+        const p = 1 - Math.pow(1 - t, 2.2);
+        const loss = 2.3026 * Math.exp(-4.4 * p) + 0.031 + (Math.random() - 0.5) * 0.04 * (1 - p);
+        stepEl.textContent = String(Math.round(t * 1200)).padStart(4, '0');
+        lossEl.textContent = Math.max(loss, 0.031).toFixed(4);
+        bar.style.width = `${t * 100}%`;
+        draw(p);
+      };
+      if (still) {
+        show(1);
+        return Promise.resolve();
+      }
+      return new Promise((resolve) => {
+        let start = 0;
+        const frame = (now: number) => {
+          if (ended) return resolve();
+          start ||= now;
+          const t = Math.min((now - start) / TRAIN, 1);
+          show(t);
+          t < 1 ? requestAnimationFrame(frame) : resolve();
+        };
+        requestAnimationFrame(frame);
+      });
     }
 
-    function frame(now: number) {
-      if (done) return;
-      if (!start) start = now;
-      const t = Math.min((now - start) / DURATION, 1);
-      const p = 1 - Math.pow(1 - t, 2.2);
-      const loss = 2.3026 * Math.exp(-4.4 * p) + 0.031 + (Math.random() - 0.5) * 0.04 * (1 - p);
-      stepEl.textContent = String(Math.round(t * STEPS)).padStart(4, '0');
-      lossEl.textContent = Math.max(loss, 0.031).toFixed(4);
-      bar.style.width = `${t * 100}%`;
-      draw(p);
-      if (t < 1) requestAnimationFrame(frame);
-      else setTimeout(finish, 180);
+    // ---- 2. Sound gate ------------------------------------------------------
+    let pick: (on: boolean) => void;
+    const picked = new Promise<boolean>((r) => (pick = r));
+
+    function openGate() {
+      let last = 'off';
+      try {
+        last = localStorage.getItem('audio') === 'on' ? 'on' : 'off';
+      } catch {}
+      const buttons = [...gate.querySelectorAll<HTMLButtonElement>('.fit__choice')];
+      buttons.forEach((b) => b.classList.toggle('is-last', b.dataset.sound === last));
+      gate.hidden = false;
+      buttons.find((b) => b.dataset.sound === last)!.focus();
+    }
+
+    gate.addEventListener('click', (e) => {
+      const b = (e.target as Element).closest<HTMLButtonElement>('.fit__choice');
+      if (!b || chosen) return;
+      chosen = true;
+      setAudio(b.dataset.sound === 'on'); // this click is the gesture that unlocks audio
+      pick(b.dataset.sound === 'on');
+    });
+    gate.addEventListener('keydown', (e) => {
+      if (!['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) return;
+      e.preventDefault();
+      const buttons = [...gate.querySelectorAll<HTMLButtonElement>('.fit__choice')];
+      const i = buttons.indexOf(document.activeElement as HTMLButtonElement);
+      buttons[(i + 1) % buttons.length].focus();
+    });
+
+    // ---- 3 + 4. Reveal and settle -------------------------------------------
+    function float(from: HTMLElement, to: HTMLElement, fade: boolean) {
+      const a = from.getBoundingClientRect();
+      const b = to.getBoundingClientRect();
+      const scale = parseFloat(getComputedStyle(to).fontSize) / parseFloat(getComputedStyle(from).fontSize);
+      // Align left edges for the h1 (it wraps), centers for the header name
+      const dx = fade ? b.left - a.left : b.left + b.width / 2 - (a.left + a.width / 2);
+      const dy = b.top + b.height / 2 - (a.top + a.height / 2);
+      if (fade) from.style.transformOrigin = 'left center';
+      return from.animate(
+        [
+          { transform: 'none', opacity: 1 },
+          ...(fade ? [{ opacity: 1, offset: 0.55 }] : []),
+          { transform: `translate(${dx}px, ${dy}px) scale(${scale})`, opacity: fade ? 0 : 1 },
+        ],
+        { duration: SETTLE, easing: 'cubic-bezier(0.65, 0, 0.25, 1)', fill: 'forwards' },
+      ).finished;
+    }
+
+    function end() {
+      if (ended) return;
+      ended = true;
+      window.removeEventListener('keydown', onKey);
+      root.classList.remove('is-loading', 'intro-landing');
+      root.removeAttribute('data-intro');
+      el!.classList.remove('fit--out');
+      el!.dataset.stage = 'done';
+    }
+
+    // Esc / [skip]: jump straight to the finished page from any stage
+    async function skip() {
+      if (ended) return;
+      if (!chosen) {
+        chosen = true;
+        setAudio(false); // skipping before choosing = without sound
+        pick(false);
+      }
+      el!.classList.add('fit--out');
+      await wait(250);
+      end();
     }
 
     function onKey(e: KeyboardEvent) {
-      if (e.key === 'Escape' || e.key === 'Enter' || e.key === ' ') finish();
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        skip();
+      }
     }
 
-    size();
-    window.addEventListener('resize', size);
-    window.addEventListener('keydown', onKey);
-    el.querySelector('.fit__skip')!.addEventListener('click', finish);
-    el.addEventListener('click', finish);
-    requestAnimationFrame(frame);
+    async function run() {
+      size();
+      window.addEventListener('resize', size);
+      window.addEventListener('keydown', onKey);
+      el!.querySelector('.fit__skip')!.addEventListener('click', skip);
+
+      await train();
+      if (ended) return;
+      $('.fit__done').hidden = false;
+      if (!still) await wait(DONE_HOLD);
+      if (ended) return;
+
+      setStage('gate');
+      openGate();
+      await picked;
+      if (ended) return;
+
+      setStage('reveal');
+      await wait(still ? STILL_HOLD : REVEAL_IN + HOLD);
+      if (ended) return;
+
+      if (still) {
+        el!.classList.add('fit--out');
+        await wait(250);
+        return end();
+      }
+
+      setStage('settle');
+      const brand = document.querySelector<HTMLElement>('.hdr__brand span');
+      const h1 = document.querySelector<HTMLElement>('.hero__title');
+      setTimeout(() => root.classList.add('intro-landing'), SETTLE * 0.5); // h1 fades in under the subtitle
+      await Promise.all([brand && float(name, brand, false), h1 && float(sub, h1, true)]);
+      end();
+    }
+
+    run();
   }
 </script>

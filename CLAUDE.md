@@ -1,6 +1,6 @@
 # waynesimmonsjr.com
 
-Wayne Simmons's portfolio: senior CS major at Queens College (graduating May 2027), Accenture AI/ML Fellow with Break Through Tech AI, aiming for ML engineering. Concept: **"Signal over noise."** Live at https://waynesimmonsjr.com.
+Wayne Simmons's portfolio: senior CS major at Queens College (graduating May 2027), Accenture AI/ML Fellow with Break Through Tech AI, aiming for ML engineering. Concept: **"I build AI to get things done."** "Signal over noise" (the original concept) is now one of five verbs: Find, Answer, Simplify, Anticipate, Delight; the unifying word is "done" (see `SPEC.md` section 2). Live at https://waynesimmonsjr.com.
 
 - `SPEC.md`: the original brief plus a status section; read it before design or content decisions.
 - `EDITING.md`: Wayne-facing how-to (projects, posts, photos, CMS, map, Last.fm, music).
@@ -43,7 +43,7 @@ npm run map      # recompute src/data/project-map.json (see Project map)
 ## Adding a project
 
 1. Get the facts from the repo (`gh api repos/WayneS0628/<repo>/readme`), its commits, and Wayne's resume. Ask him for anything else.
-2. Create `src/content/projects/<slug>/index.md`; the folder name is the URL (`/work/<slug>/`). Frontmatter is validated by zod in `src/content.config.ts`: `title, summary, task, data, model, metric?, stack[], status (shipped|training|planned), featured, cover?, coverAlt?, github?, demo?, writeup?, team?, date, draft`.
+2. Create `src/content/projects/<slug>/index.md`; the folder name is the URL (`/work/<slug>/`). Frontmatter is validated by zod in `src/content.config.ts`: `title, summary, outcome?, verb? (find|answer|simplify|anticipate|delight), task, data, model, metric?, stack[], status (shipped|training|planned), featured, cover?, coverAlt?, github?, demo?, writeup?, team?, date, draft`. `outcome` shows first as "Gets done"; `verb` puts the project in its homepage verb tile. Status displays as `[done]` / `[in progress]` / `[next]` (`src/components/Status.astro`).
 3. Put images next to `index.md` and reference them as `./file.png` (Astro optimizes them). Always write real alt text.
 4. The homepage shows the **newest 4** projects with `featured: true`.
 5. Run `npm run map` and commit `src/data/project-map.json`. Its ML packages live in `scripts/project-map/` (own `package.json`, ~600 MB local cache, gitignored, never installed by CI).
@@ -57,6 +57,7 @@ Writing posts work the same way in `src/content/writing/<slug>/index.md` (`title
   - Bundled scripts run once per visit. Use event delegation on `document`, or re-run on `astro:page-load`. Never cache page elements across navigations.
   - `astro:before-swap` copies `data-theme` and `data-audio` onto the incoming page (in `src/scripts/ui.ts`).
   - The ⌘K palette `<dialog>` is `transition:persist`. Internal links in scripts use `navigate()` from `astro:transitions/client`, never `location.href`.
+- **Homepage intro** (`src/components/Loader.astro`, first homepage visit per session): training run → `✓ done` → sound gate (the click unlocks audio) → name reveal → name floats into `.hdr__brand`, subtitle into the hero h1. Esc/[skip] at any stage. Base.astro's inline script adds `.is-loading` and drops it after 4 s only if the intro never set `data-intro`.
 - **Site settings** live in `src/site.ts`: email, resume path, status chip, stats strip (real numbers only), Last.fm, and `ambient` (empty = generative lofi).
 - **Audio:** `src/scripts/audio.ts` handles UI ticks and the toggle. `src/scripts/lofi.ts` is a Web Audio lofi loop, lazy-loaded. Browsers block sound until the first user gesture.
 - **Last.fm player:** `src/components/NowPlaying.astro`, user `waynes0628`. The API key is Last.fm's public read-only key, so it's fine in the code. It shows now playing plus the track before it, or the last played track when nothing is on.

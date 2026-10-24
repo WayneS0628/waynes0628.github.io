@@ -1,6 +1,8 @@
 ---
 title: CUAD Contract Triage
 summary: A pipeline that finds the risky clauses in commercial contracts and ranks which contracts a legal team should open first. Built for Accenture with a 7-person Break Through Tech AI Studio team.
+outcome: "Tells a legal team which contracts to open first."
+verb: find
 task: Multi-label clause detection + risk triage
 data: CUAD, 510 commercial contracts, 41 expert-annotated clause types
 model: TF-IDF + logistic regression baseline; fine-tuned transformer encoder in progress

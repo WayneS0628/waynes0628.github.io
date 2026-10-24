@@ -1,6 +1,8 @@
 ---
 title: CleanTube
 summary: A search-only front door to YouTube. No home feed, no recommendations. Arrive with intent, find it, leave.
+outcome: "Lets you use YouTube without getting pulled in."
+verb: simplify
 task: Cut algorithmic noise out of YouTube
 data: Your search query, nothing else
 model: No ML. A single-page HTML wrapper

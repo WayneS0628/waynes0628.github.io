@@ -114,7 +114,9 @@ export function initAudio() {
     loadLofi();
     // Returning visitor with audio on: start on their very first interaction
     // (any click, tap, or key), since browsers won't allow it before that.
+    // While the homepage intro runs, its sound gate decides instead.
     const start = () => {
+      if (root.classList.contains('is-loading')) return;
       ['pointerdown', 'keydown', 'touchstart'].forEach((t) => document.removeEventListener(t, start, true));
       syncMusic();
     };

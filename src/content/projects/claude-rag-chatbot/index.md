@@ -2,6 +2,8 @@
 title: Claude RAG Chatbot
 summary: A Streamlit chatbot on the Claude API that routes each question to the
   right knowledge base and answers grounded in it.
+outcome: "Answers questions grounded in the right document instead of guessing."
+verb: answer
 task: Retrieval-augmented question answering
 data: Knowledge base files on Harvard, Cornell, and Duke
 model: Claude Haiku as router, Claude for generation

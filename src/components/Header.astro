@@ -9,7 +9,8 @@ const isCurrent = (href: string) => path === href || path.startsWith(href);
   <div class="wrap hdr__in">
     <a class="hdr__brand" href="/" aria-label="Wayne Simmons, home">
       <svg class="hdr__mark" viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M2 12h3l2-6 3 12 3-9 2 5 2-2h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+        <!-- a signal that resolves into a checkmark: signal becomes done -->
+        <path d="M1.5 12H4l2-5 2.5 9 2-5.5 3.5 5L22 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
       </svg>
       <span>Wayne Simmons</span>
     </a>

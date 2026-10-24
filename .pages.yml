@@ -32,6 +32,21 @@ content:
         type: text
         required: true
         description: One or two sentences. Shown on cards and in search results.
+      - name: outcome
+        label: Gets done
+        type: string
+        description: One line on what it does for people. Shown first on cards and the project page.
+      - name: verb
+        label: Verb
+        type: select
+        description: Which homepage "What done looks like" tile lists this project.
+        options:
+          values:
+            - { name: find, label: Find }
+            - { name: answer, label: Answer }
+            - { name: simplify, label: Simplify }
+            - { name: anticipate, label: Anticipate }
+            - { name: delight, label: Delight }
       - { name: task, label: Task, type: string, required: true, description: "What the model does, e.g. Binary classification" }
       - { name: data, label: Data, type: string, required: true }
       - { name: model, label: Model, type: string, required: true }
