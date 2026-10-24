@@ -3,39 +3,46 @@
   "method": "mean-pooled sentence embeddings, PCA to 2D",
   "points": [
     {
+      "id": "autonomous-data-analyst",
+      "x": 0.7413,
+      "y": 0.5833,
+      "nearest": "claude-rag-chatbot",
+      "similarity": 0.43
+    },
+    {
       "id": "claude-rag-chatbot",
-      "x": 0.9,
-      "y": 0.6212,
-      "nearest": "cleantube",
-      "similarity": 0.38
+      "x": 0.8769,
+      "y": 0.3469,
+      "nearest": "autonomous-data-analyst",
+      "similarity": 0.43
     },
     {
       "id": "cleantube",
-      "x": 0.6175,
-      "y": 0.7749,
+      "x": 0.5517,
+      "y": 0.2334,
       "nearest": "claude-rag-chatbot",
       "similarity": 0.38
     },
     {
       "id": "cuad-contract-triage",
-      "x": 0.7007,
-      "y": 0.1,
-      "nearest": "claude-rag-chatbot",
-      "similarity": 0.253
+      "x": 0.7281,
+      "y": 0.8707,
+      "nearest": "autonomous-data-analyst",
+      "similarity": 0.324
     },
     {
       "id": "spotify-tracks-explorer",
-      "x": 0.1232,
-      "y": 0.8128,
+      "x": 0.1,
+      "y": 0.2814,
       "nearest": "cleantube",
       "similarity": 0.239
     },
     {
       "id": "titanic-dtvsnn",
-      "x": 0.1407,
-      "y": 0.1731,
-      "nearest": "cleantube",
-      "similarity": 0.188
+      "x": 0.2178,
+      "y": 0.9,
+      "nearest": "autonomous-data-analyst",
+      "similarity": 0.236
     }
   ]
 }
