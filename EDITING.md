@@ -29,12 +29,14 @@ npm run dev      # http://localhost:4321, reloads as you edit
    ---
    title: My Project
    summary: One sentence on what it is and why it matters.
+   outcome: One line on what it does for people   # shown first, as "Gets done"
+   verb: find                          # find | answer | simplify | anticipate | delight (homepage tile)
    task: What the model does (e.g. Binary classification)
    data: What it was trained on
    model: What you used
    metric: 0.91 F1 on held-out test   # real values only; leave the line out if there isn't one
    stack: [Python, PyTorch]
-   status: shipped                     # shipped | training | planned
+   status: shipped                     # shipped | training | planned (shown as [done] / [in progress] / [next])
    featured: true                      # true = shows on the homepage (newest 4 are shown)
    cover: ./cover.jpg                  # optional image in the same folder
    coverAlt: What the cover image shows

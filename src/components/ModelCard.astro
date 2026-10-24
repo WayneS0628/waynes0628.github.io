@@ -8,7 +8,7 @@ interface Props {
   index: number;
 }
 const { project, index } = Astro.props;
-const { title, summary, task, model, metric, stack, status, team } = project.data;
+const { title, summary, outcome, task, model, metric, stack, status, team } = project.data;
 const href = `/work/${project.id}/`;
 ---
 
@@ -20,6 +20,7 @@ const href = `/work/${project.id}/`;
   <h3 class="card__title"><a href={href}>{title}</a></h3>
   <p class="card__summary"><Val value={summary} /></p>
   <dl class="card__spec">
+    {outcome && <div class="card__outcome"><dt class="label">Gets done</dt><dd><Val value={outcome} /></dd></div>}
     <div><dt class="label">Task</dt><dd><Val value={task} /></dd></div>
     <div><dt class="label">Model</dt><dd><Val value={model} /></dd></div>
     <div><dt class="label">Key metric</dt><dd><Val value={metric} /></dd></div>
@@ -97,6 +98,13 @@ const href = `/work/${project.id}/`;
   .card__spec dd {
     margin: 0;
     font-size: 15px;
+  }
+  .card__outcome dd {
+    color: var(--text);
+    font-weight: 500;
+  }
+  .card__outcome dt {
+    color: var(--accent-text);
   }
   .card__foot {
     display: flex;

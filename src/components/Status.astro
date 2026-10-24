@@ -1,9 +1,11 @@
 ---
+// Status chip. Schema values stay shipped | training | planned; the site
+// speaks in terms of getting things done.
 interface Props {
   status: 'shipped' | 'training' | 'planned';
 }
 const { status } = Astro.props;
-const label = { shipped: 'Shipped', training: 'Training', planned: 'Planned' }[status];
+const label = { shipped: '[done]', training: '[in progress]', planned: '[next]' }[status];
 ---
 
 <span class={`status status--${status}`}>{label}</span>

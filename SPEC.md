@@ -11,6 +11,8 @@ Phases 0, 1, and 2 are live on waynesimmonsjr.com (Astro, deployed by GitHub Act
 - Phase 2 plus extras (NYC skyline in the hero, generative lofi music, Last.fm "last played" player, project map, Pages CMS): PR #4
 - Audio fixes (instant start, music keeps playing across pages via client-side navigation) and Last.fm turned on: PR #5
 - Content pass (About page, first post, this spec): PR #6
+- CLAUDE.md for future sessions, MarianMT removed, CleanTube back on the homepage: PR #8
+- **Rebrand to "I build AI to get things done."** (in progress): the identity moves from "Signal over noise" to the five verbs in section 2, with a new first-visit intro (training run, sound gate, name reveal): PR #9.
 
 Sections 1 to 8 below are the original brief, edited where decisions changed. How to edit content: `EDITING.md`.
 
@@ -38,14 +40,34 @@ Sections 1 to 8 below are the original brief, edited where decisions changed. Ho
 
 ## 2. Brand
 
-**Concept: "Signal over noise."** Ties together ML (finding signal in data), CleanTube (cutting algorithmic noise), his focus ethic, guitar/audio, and quiet attention.
+**Concept: "I build AI to get things done."** Hire me if you want things done.
 
-- Hero headline: **Signal over noise.**
-- Subline: "I'm Wayne, an ML engineer in Queens building AI that finds what matters in messy data, and someday protects the people it's about."
+### The story
+"Signal over noise" (the original concept) was true but too narrow and too science-y. Finding insight in noise is one thing Wayne does. He also builds AI that informs people, makes life easier, acts proactively, and does cool things. So the identity is broader: **I build AI to get things done.**
+
+Signal over noise isn't erased. It becomes one of five verbs:
+
+| Verb | Meaning | Proof |
+|---|---|---|
+| **Find** | Pull insight out of messy data. | CUAD, Spotify, Titanic |
+| **Answer** | Inform people with grounded answers. | Claude RAG chatbot |
+| **Simplify** | Make life easier. | CleanTube |
+| **Anticipate** | Act before you have to ask. | `[next]`: the agentic project from the Nov–Dec 2026 sprint. Marked honestly as next; no placeholder project. |
+| **Delight** | Do cool things. | This site: live generative lofi, latent-space project map |
+
+The unifying word is **done**. It shows up in the loader, the hero, project status, the dictionary, and contact.
+
+Homepage arc: **claim** (hero) → **proof** (stats) → **range** (the five verbs) → **receipts** (the done list) → **definition** (dictionary) → **ask** (contact).
+
+### Brand copy
+- Hero headline: **I build AI to get things done.**
+- Subline (also `site.description` and meta/OG description): "I'm Wayne, an ML engineer in Queens. I build models and tools that find answers in messy data, help people, and take work off their plate."
 - Header status chip: green dot + "Open to 2027 ML internships"
+- Project status labels: `shipped` shows as `[done]`, `training` as `[in progress]`, `planned` as `[next]` (schema values unchanged).
 - Dictionary section (homepage):
-  > **signal** /ˈsɪɡ.nəl/ *noun*. The part of the data that's actually true.
-  > *For me:* what's left when you cut everything that isn't.
+  > **done** /dʌn/ *adjective*. 1. Finished. Working. Off your plate.
+  > *For me:* the only status that counts.
+- Contact: "Let's get something done." 404: "Not done yet."
 - About page: origin story (born in Brooklyn, Trinidadian and Guyanese heritage, 4 years at Apple Retail, RA at Summit Apartments, Break Through Tech AI 2026–27 cohort) plus personal goals (motorcycle, travel to Ethiopia, collect art, learn a backflip, guitar, gym, gaming).
 - Meta title: "Wayne Simmons, ML Engineer"
 

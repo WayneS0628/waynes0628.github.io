@@ -1,6 +1,8 @@
 ---
 title: What 114,000 Songs Sound Like
 summary: An honest look at Spotify's catalog as data, ending in an interactive explorer you can filter yourself.
+outcome: "Lets anyone explore 114k songs and test genre stereotypes themselves."
+verb: find
 task: Exploratory analysis + interactive explorer
 data: ~114k Spotify tracks across 114 genres (HuggingFace)
 model: None. Descriptive stats and correlation analysis

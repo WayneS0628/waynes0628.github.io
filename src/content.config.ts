@@ -16,6 +16,8 @@ const projects = defineCollection({
     z.object({
       title: z.string(),
       summary: z.string(),
+      outcome: z.string().optional(), // "Gets done": the one line that says what it does for people
+      verb: z.enum(['find', 'answer', 'simplify', 'anticipate', 'delight']).optional(), // homepage verb tile
       task: z.string(),
       data: z.string(),
       model: z.string(),

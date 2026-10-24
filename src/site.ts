@@ -5,7 +5,7 @@ export const site = {
   name: 'Wayne Simmons',
   title: 'Wayne Simmons, ML Engineer',
   description:
-    "I'm Wayne, an ML engineer in Queens building AI that finds what matters in messy data, and someday protects the people it's about.",
+    "I'm Wayne, an ML engineer in Queens. I build models and tools that find answers in messy data, help people, and take work off their plate.",
   status: 'Open to 2027 ML internships',
   email: 'waynesimmonsjr@icloud.com',
   resume: '/resume.pdf', // the file lives at public/resume.pdf

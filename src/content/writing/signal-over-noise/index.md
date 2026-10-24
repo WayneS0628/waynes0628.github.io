@@ -4,6 +4,8 @@ summary: Why I scrapped my template portfolio, the one idea the new site is buil
 date: 2026-10-23
 ---
 
+*Update: the big idea has since changed. Read [Signal was one verb](/writing/signal-was-one-verb/).*
+
 My old site was a purchased Jekyll theme with my name typed into it. The headline said I was "a dedicated computer science student passionate about machine learning," which is true of roughly every CS student alive. Three of the four featured projects were the same Titanic dataset. There was a test post sitting on the homepage. None of it said anything a recruiter couldn't guess from my resume header.
 
 So I started over with one idea: **signal over noise.**

@@ -1,6 +1,8 @@
 ---
 title: Decision Tree vs Neural Network
 summary: Two models on the Titanic dataset, taken through the full ML life cycle side by side, then scored against Kaggle's real holdout.
+outcome: "Shows whether a neural net's extra complexity actually pays off on small tabular data."
+verb: find
 task: Binary classification (passenger survival)
 data: Kaggle Titanic, 891 passengers
 model: Tuned decision tree vs. 3-layer Keras network

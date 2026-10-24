@@ -5,6 +5,7 @@ import Loader from '../components/Loader.astro';
 import Skyline from '../components/Skyline.astro';
 import NowPlaying from '../components/NowPlaying.astro';
 import ProjectMap from '../components/ProjectMap.astro';
+import Verbs from '../components/Verbs.astro';
 import ModelCard from '../components/ModelCard.astro';
 import ContactBlock from '../components/ContactBlock.astro';
 import { site, stats } from '../site';
@@ -26,7 +27,7 @@ const strip = [{ value: String(shipped), label: 'projects shipped' }, ...stats];
     <div class="wrap hero__in">
       <div class="hero__text">
       <p class="label"><b>[00]</b> ML engineer · Queens, NY</p>
-      <h1 class="hero__title">Signal <span>over noise.</span></h1>
+      <h1 class="hero__title">I build AI <span>to get things <em>done.</em></span></h1>
       <p class="hero__sub">{site.description}</p>
       <div class="hero__cta">
         <a class="btn btn--accent" href="/work/">See the work →</a>
@@ -68,12 +69,24 @@ const strip = [{ value: String(shipped), label: 'projects shipped' }, ...stats];
     </dl>
   </section>
 
+  <section class="section" id="range">
+    <div class="wrap">
+      <div class="section__head">
+        <div>
+          <p class="label"><b>[range]</b> Five verbs</p>
+          <h2 class="section__title">What done looks like</h2>
+        </div>
+      </div>
+      <Verbs />
+    </div>
+  </section>
+
   <section class="section" id="work">
     <div class="wrap">
       <div class="section__head">
         <div>
           <p class="label"><b>[01]</b> Work</p>
-          <h2 class="section__title">Selected models</h2>
+          <h2 class="section__title">The done list</h2>
         </div>
         <a class="btn-text" href="/work/">[all projects →]</a>
       </div>
@@ -100,12 +113,12 @@ const strip = [{ value: String(shipped), label: 'projects shipped' }, ...stats];
       <p class="label"><b>[def]</b> Dictionary</p>
       <div class="dict__entry">
         <p class="dict__head">
-          <span class="dict__word">signal</span>
-          <span class="mono dict__ipa">/ˈsɪɡ.nəl/</span>
-          <em class="mono dict__pos">noun</em>
+          <span class="dict__word">done</span>
+          <span class="mono dict__ipa">/dʌn/</span>
+          <em class="mono dict__pos">adjective</em>
         </p>
-        <p class="dict__def"><span class="mono">1.</span> The part of the data that's actually true.</p>
-        <p class="dict__mine"><span class="label">For me:</span> what's left when you cut everything that isn't.</p>
+        <p class="dict__def"><span class="mono">1.</span> Finished. Working. Off your plate.</p>
+        <p class="dict__mine"><span class="label">For me:</span> the only status that counts.</p>
       </div>
     </div>
   </section>
@@ -143,14 +156,19 @@ const strip = [{ value: String(shipped), label: 'projects shipped' }, ...stats];
   }
   .hero__title {
     margin-top: 24px;
-    font-size: clamp(56px, 12.5vw, 176px);
-    line-height: 0.92;
+    font-size: clamp(44px, 8.6vw, 128px);
+    line-height: 0.95;
     letter-spacing: -0.05em;
     font-weight: 600;
+    transition: opacity 0.5s var(--ease);
   }
   .hero__title span {
     display: block;
     color: var(--muted);
+  }
+  .hero__title em {
+    font-style: normal;
+    color: var(--accent);
   }
   .hero__sub {
     max-width: 40ch;
