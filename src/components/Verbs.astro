@@ -7,9 +7,11 @@ const projects = (await getCollection('projects', ({ data }) => !data.draft)).so
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
 );
 const proof = (verb: string) =>
-  projects.filter((p) => p.data.verb === verb).map((p) => ({ label: p.data.title, href: `/work/${p.id}/` }));
+  projects
+    .filter((p) => p.data.verb === verb)
+    .map((p) => ({ label: p.data.title, href: `/work/${p.id}/`, planned: p.data.status === 'planned' }));
 
-type Link = { label: string; href: string };
+type Link = { label: string; href: string; planned?: boolean };
 const verbs: { key: string; verb: string; meaning: string; links: Link[]; next?: string }[] = [
   { key: 'find', verb: 'Find', meaning: 'Pull insight out of messy data.', links: proof('find') },
   { key: 'answer', verb: 'Answer', meaning: 'Inform people with grounded answers.', links: proof('answer') },
@@ -41,7 +43,7 @@ const verbs: { key: string; verb: string; meaning: string; links: Link[]; next?:
         <p class="label verb__top">
           <b>[{String(i + 1).padStart(2, '0')}]</b>
           {v.key}
-          {v.next && !v.links.length && <span class="verb__next">[next]</span>}
+          {v.next && v.links.every((l) => l.planned) && <span class="verb__next">[next]</span>}
         </p>
         <h3 class="verb__name">{v.verb}</h3>
         <p class="verb__meaning">{v.meaning}</p>
