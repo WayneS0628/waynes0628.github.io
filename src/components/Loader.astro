@@ -310,9 +310,10 @@
     const picked = new Promise<boolean>((r) => (pick = r));
 
     function openGate() {
-      let last = 'off';
+      // Pre-select "with sound" unless this visitor last chose to be quiet.
+      let last = 'on';
       try {
-        last = localStorage.getItem('audio') === 'on' ? 'on' : 'off';
+        if (localStorage.getItem('audio') === 'off') last = 'off';
       } catch {}
       const buttons = [...gate.querySelectorAll<HTMLButtonElement>('.fit__choice')];
       buttons.forEach((b) => b.classList.toggle('is-last', b.dataset.sound === last));
