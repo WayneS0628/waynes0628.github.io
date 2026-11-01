@@ -1,8 +1,8 @@
 ---
 import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
-import portrait from '../assets/portrait.jpg';
-import fireTruck from '../assets/fire-truck.jpg';
+import portrait from '../assets/portrait-podium.jpg';
+import skyline from '../assets/skyline-night.jpg';
 
 const goals = ['Get a motorcycle', 'Travel to Ethiopia', 'Collect art', 'Learn a backflip'];
 const habits = ['Gym', 'Guitar', 'Gaming', 'YouTube', 'Deep in a playlist'];
@@ -23,7 +23,7 @@ const habits = ['Gym', 'Guitar', 'Gaming', 'YouTube', 'Deep in a playlist'];
         </p>
       </div>
       <figure class="about__portrait">
-        <Image src={portrait} alt="Portrait of Wayne Simmons in glasses and a black quarter-zip" width={640} widths={[320, 480, 640]} sizes="(max-width: 800px) 60vw, 320px" loading="eager" />
+        <Image src={portrait} alt="Wayne Simmons in glasses and a grey sweater, standing at a podium" width={640} widths={[320, 480, 640]} sizes="(max-width: 800px) 60vw, 320px" loading="eager" />
       </figure>
     </header>
 
@@ -76,7 +76,7 @@ const habits = ['Gym', 'Guitar', 'Gaming', 'YouTube', 'Deep in a playlist'];
         </ul>
       </div>
       <figure class="clock-off__photo">
-        <Image src={fireTruck} alt="Wayne standing in front of an FDNY fire truck on a city street" width={960} widths={[480, 720, 960]} sizes="(max-width: 800px) 100vw, 480px" />
+        <Image src={skyline} alt="Wayne from behind at a waterfront railing at night, looking across the river at the lit Manhattan skyline and the Empire State Building" width={960} widths={[480, 720, 960]} sizes="(max-width: 800px) 100vw, 480px" />
       </figure>
     </section>
 
