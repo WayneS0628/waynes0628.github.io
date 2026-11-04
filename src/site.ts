@@ -7,7 +7,7 @@ export const site = {
   description:
     "I'm Wayne, an ML engineer in Queens. I build models and tools that find answers in messy data, help people, and take work off their plate.",
   status: 'Open to 2027 ML internships',
-  email: 'waynesimmonsjr@icloud.com',
+  email: 'wayne@waynesimmonsjr.com',
   resume: '/resume.pdf', // the file lives at public/resume.pdf
   links: {
     github: 'https://github.com/WayneS0628',
