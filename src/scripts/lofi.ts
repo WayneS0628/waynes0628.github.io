@@ -1,8 +1,8 @@
 // Generative lofi hip-hop loop, synthesized live with Web Audio (no audio files).
-// Four-bar soul progression (Dm9, G13, Cmaj9, A7b13) at 88 bpm: chopped
+// Four-bar progression in F minor (Fm9, Bbm9, Dbmaj9, C7#9) at 88 bpm: chopped
 // electric-piano stabs, a bouncing sine bass, punchy swung boom-bap drums with
-// ghost notes, a repeating melodic hook, a little sidechain pump, tape wobble,
-// and vinyl crackle. Loaded only when audio is turned on.
+// ghost notes, a syncopated minor-pentatonic hook on a soft flute-like voice,
+// a little sidechain pump, tape wobble, and vinyl crackle. Loaded only when audio is turned on.
 
 const BPM = 88;
 const STEP = 60 / BPM / 4; // one 16th note
@@ -11,10 +11,10 @@ const VOLUME = 0.16;
 const BARS = 4;
 
 const CHORDS: { bass: number; notes: number[] }[] = [
-  { bass: 38, notes: [53, 57, 60, 64] }, // Dm9 (rootless)
-  { bass: 43, notes: [53, 57, 59, 64] }, // G13 (rootless)
-  { bass: 36, notes: [52, 55, 59, 62] }, // Cmaj9
-  { bass: 45, notes: [55, 59, 61, 65] }, // A7b13
+  { bass: 41, notes: [56, 60, 63, 67] }, // Fm9 (rootless)
+  { bass: 46, notes: [56, 60, 61, 65] }, // Bbm9
+  { bass: 37, notes: [53, 56, 60, 63] }, // Dbmaj9 (rootless)
+  { bass: 36, notes: [52, 55, 58, 63] }, // C7#9
 ];
 
 // Chord stabs, like a chopped sample: [16th step, length in 16ths].
@@ -25,11 +25,12 @@ const STABS: [number, number][] = [[0, 5], [7, 2], [10, 4]];
 const BASS: [number, number, number][] = [[0, 0, 3], [3, 0, 1], [6, 7, 2], [8, 12, 2], [11, 0, 2]];
 
 // The hook: [bar, step, midi note, length in 16ths]. Plays every other loop.
+// F minor pentatonic, landing on E natural over the C7#9 to pull back home.
 const HOOK: [number, number, number, number][] = [
-  [0, 2, 76, 2], [0, 4, 74, 2], [0, 7, 72, 3], [0, 10, 69, 2],
-  [1, 2, 74, 2], [1, 4, 71, 2], [1, 6, 69, 4],
-  [2, 2, 76, 2], [2, 4, 74, 2], [2, 7, 79, 3], [2, 10, 76, 2],
-  [3, 2, 73, 2], [3, 4, 76, 2], [3, 7, 79, 2], [3, 10, 77, 3],
+  [0, 3, 80, 1], [0, 4, 77, 2], [0, 6, 75, 2], [0, 9, 77, 1], [0, 10, 80, 3],
+  [1, 3, 82, 1], [1, 4, 80, 2], [1, 6, 77, 2], [1, 11, 75, 1], [1, 12, 77, 3],
+  [2, 3, 84, 1], [2, 4, 82, 2], [2, 6, 80, 2], [2, 9, 77, 1], [2, 10, 80, 2], [2, 13, 84, 2],
+  [3, 2, 82, 2], [3, 4, 79, 2], [3, 7, 76, 3], [3, 11, 79, 1], [3, 12, 72, 3],
 ];
 
 // Drums per bar (16 steps). Odd bars swap in a busier kick for bounce.
@@ -194,7 +195,7 @@ export function createLofi(ctx: AudioContext) {
     // Hook on odd loops; on even loops, a few random notes from it as answers.
     for (const [b, at, n, len] of HOOK) {
       if (b !== bar || i !== at) continue;
-      if (loop % 2 === 1 || Math.random() < 0.18) voice(hz(n), t, STEP * len, 0.06, keysBus, 0.3, 0.4);
+      if (loop % 2 === 1 || Math.random() < 0.18) voice(hz(n), t, STEP * len, 0.065, keysBus, 0.04, 0.45);
     }
 
     // Drums.
