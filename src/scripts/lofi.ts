@@ -1,53 +1,75 @@
-// Generative lofi loop, synthesized live with Web Audio (no audio files).
-// Four-bar progression in C (Fmaj7, Em7, Dm9, Cmaj9) at 70 bpm, with soft
-// electric-piano chords, sine bass, swung boom-bap drums, a sparse pentatonic
-// melody, tape wobble, and vinyl crackle. Loaded only when audio is turned on.
+// Generative lofi hip-hop loop, synthesized live with Web Audio (no audio files).
+// Four-bar soul progression (Dm9, G13, Cmaj9, A7b13) at 88 bpm: chopped
+// electric-piano stabs, a bouncing sine bass, punchy swung boom-bap drums with
+// ghost notes, a repeating melodic hook, a little sidechain pump, tape wobble,
+// and vinyl crackle. Loaded only when audio is turned on.
 
-const BPM = 70;
+const BPM = 88;
 const STEP = 60 / BPM / 4; // one 16th note
-const SWING = 0.045; // seconds added to every off-beat 16th
+const SWING = 0.028; // seconds added to every off-beat 16th
 const VOLUME = 0.16;
+const BARS = 4;
 
 const CHORDS: { bass: number; notes: number[] }[] = [
-  { bass: 41, notes: [53, 57, 60, 64] }, // Fmaj7
-  { bass: 40, notes: [52, 55, 59, 62] }, // Em7
-  { bass: 38, notes: [50, 53, 57, 60, 64] }, // Dm9
-  { bass: 36, notes: [48, 52, 55, 59, 62] }, // Cmaj9
+  { bass: 38, notes: [53, 57, 60, 64] }, // Dm9 (rootless)
+  { bass: 43, notes: [53, 57, 59, 64] }, // G13 (rootless)
+  { bass: 36, notes: [52, 55, 59, 62] }, // Cmaj9
+  { bass: 45, notes: [55, 59, 61, 65] }, // A7b13
 ];
-const MELODY = [72, 74, 76, 79, 81, 84]; // C major pentatonic, upper octave
-const KICK = new Set([0, 7, 10]);
+
+// Chord stabs, like a chopped sample: [16th step, length in 16ths].
+const STABS: [number, number][] = [[0, 5], [7, 2], [10, 4]];
+
+// Bass line per bar: [step, semitones above the root, length in 16ths].
+// Step 14 is a chromatic approach into the next bar's root.
+const BASS: [number, number, number][] = [[0, 0, 3], [3, 0, 1], [6, 7, 2], [8, 12, 2], [11, 0, 2]];
+
+// The hook: [bar, step, midi note, length in 16ths]. Plays every other loop.
+const HOOK: [number, number, number, number][] = [
+  [0, 2, 76, 2], [0, 4, 74, 2], [0, 7, 72, 3], [0, 10, 69, 2],
+  [1, 2, 74, 2], [1, 4, 71, 2], [1, 6, 69, 4],
+  [2, 2, 76, 2], [2, 4, 74, 2], [2, 7, 79, 3], [2, 10, 76, 2],
+  [3, 2, 73, 2], [3, 4, 76, 2], [3, 7, 79, 2], [3, 10, 77, 3],
+];
+
+// Drums per bar (16 steps). Odd bars swap in a busier kick for bounce.
+const KICK = [new Set([0, 7, 10]), new Set([0, 3, 8, 10, 15])];
 const SNARE = new Set([4, 12]);
+const GHOST = new Set([7, 11, 14]);
 
 const hz = (midi: number) => 440 * 2 ** ((midi - 69) / 12);
 
 export function createLofi(ctx: AudioContext) {
-  // master: gain -> warm lowpass -> gentle compression -> out
+  // master: gain -> warm lowpass -> glue compression -> out
   const master = ctx.createGain();
   master.gain.value = 0;
   const tone = Object.assign(ctx.createBiquadFilter(), { type: 'lowpass' });
-  tone.frequency.value = 3200;
+  tone.frequency.value = 3800;
   const comp = ctx.createDynamicsCompressor();
-  comp.threshold.value = -18;
-  comp.ratio.value = 3;
+  comp.threshold.value = -20;
+  comp.ratio.value = 4;
+  comp.attack.value = 0.01;
+  comp.release.value = 0.15;
   master.connect(tone).connect(comp).connect(ctx.destination);
 
+  const KEYS_LEVEL = 0.5;
   const keysBus = ctx.createGain();
-  keysBus.gain.value = 0.5;
+  keysBus.gain.value = KEYS_LEVEL;
   const keysTone = Object.assign(ctx.createBiquadFilter(), { type: 'lowpass' });
-  keysTone.frequency.value = 1500;
+  keysTone.frequency.value = 1700;
   keysBus.connect(keysTone).connect(master);
 
   const drumBus = ctx.createGain();
-  drumBus.gain.value = 0.55;
+  drumBus.gain.value = 0.7;
   const drumTone = Object.assign(ctx.createBiquadFilter(), { type: 'lowpass' });
-  drumTone.frequency.value = 4500;
+  drumTone.frequency.value = 5500;
   drumBus.connect(drumTone).connect(master);
 
   // Tape wobble: a slow LFO on every pitched voice's detune.
   const wow = ctx.createOscillator();
   wow.frequency.value = 0.55;
   const wowDepth = ctx.createGain();
-  wowDepth.gain.value = 7; // cents
+  wowDepth.gain.value = 6; // cents
   wow.connect(wowDepth);
   wow.start();
 
@@ -71,7 +93,7 @@ export function createLofi(ctx: AudioContext) {
     const hp = Object.assign(ctx.createBiquadFilter(), { type: 'highpass' });
     hp.frequency.value = 900;
     const g = ctx.createGain();
-    g.gain.value = 0.22;
+    g.gain.value = 0.2;
     src.connect(hp).connect(g).connect(master);
     return src;
   })();
@@ -84,9 +106,9 @@ export function createLofi(ctx: AudioContext) {
     g.gain.setTargetAtTime(0.0001, t + hold, release / 4);
   }
 
-  function voice(freq: number, t: number, dur: number, peak: number, bus: AudioNode, bright = 0.12) {
+  function voice(freq: number, t: number, dur: number, peak: number, bus: AudioNode, bright = 0.12, release = 0.5) {
     const g = ctx.createGain();
-    env(g, t, peak, 0.02, dur, 0.8);
+    env(g, t, peak, 0.012, dur, release);
     g.connect(bus);
     for (const [type, mult, level] of [['sine', 1, 1], ['triangle', 2, bright]] as const) {
       const o = Object.assign(ctx.createOscillator(), { type });
@@ -97,26 +119,30 @@ export function createLofi(ctx: AudioContext) {
       lg.gain.value = level;
       o.connect(lg).connect(g);
       o.start(t);
-      o.stop(t + dur + 1);
+      o.stop(t + dur + release + 0.2);
     }
   }
 
-  function kick(t: number) {
+  function kick(t: number, peak = 1) {
     const o = ctx.createOscillator();
     const g = ctx.createGain();
-    o.frequency.setValueAtTime(110, t);
-    o.frequency.exponentialRampToValueAtTime(42, t + 0.12);
-    g.gain.setValueAtTime(0.9, t);
-    g.gain.exponentialRampToValueAtTime(0.001, t + 0.38);
+    o.frequency.setValueAtTime(150, t);
+    o.frequency.exponentialRampToValueAtTime(45, t + 0.09);
+    g.gain.setValueAtTime(peak, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.32);
     o.connect(g).connect(drumBus);
     o.start(t);
-    o.stop(t + 0.4);
+    o.stop(t + 0.34);
+    // Sidechain pump: duck the keys under each kick.
+    keysBus.gain.setValueAtTime(KEYS_LEVEL * 0.55, t);
+    keysBus.gain.linearRampToValueAtTime(KEYS_LEVEL, t + 0.16);
   }
 
-  function hit(t: number, type: BiquadFilterType, freq: number, peak: number, decay: number) {
+  function hit(t: number, type: BiquadFilterType, freq: number, peak: number, decay: number, q = 1) {
     const src = Object.assign(ctx.createBufferSource(), { buffer: noise });
     const f = Object.assign(ctx.createBiquadFilter(), { type });
     f.frequency.value = freq;
+    f.Q.value = q;
     const g = ctx.createGain();
     g.gain.setValueAtTime(peak, t);
     g.gain.exponentialRampToValueAtTime(0.001, t + decay);
@@ -125,31 +151,63 @@ export function createLofi(ctx: AudioContext) {
     src.stop(t + decay + 0.02);
   }
 
+  function snare(t: number, peak: number) {
+    hit(t, 'bandpass', 1900, peak, 0.18, 0.8);
+    // Body: a short pitched thump under the noise.
+    const o = ctx.createOscillator();
+    const g = ctx.createGain();
+    o.frequency.setValueAtTime(230, t);
+    o.frequency.exponentialRampToValueAtTime(160, t + 0.08);
+    g.gain.setValueAtTime(peak * 0.9, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.1);
+    o.connect(g).connect(drumBus);
+    o.start(t);
+    o.stop(t + 0.12);
+  }
+
   let step = 0;
+  let loop = 0;
   let next = 0;
   let timer: number | undefined;
 
   function schedule(t: number, s: number) {
-    const bar = Math.floor(s / 16) % CHORDS.length;
+    const bar = Math.floor(s / 16);
     const i = s % 16;
     const chord = CHORDS[bar];
-    const barLen = STEP * 16;
 
-    if (i === 0) {
-      chord.notes.forEach((n, k) => voice(hz(n), t + k * 0.018, barLen * 0.92, 0.09 + Math.random() * 0.02, keysBus));
+    // Keys: chopped stabs, slightly strummed.
+    for (const [at, len] of STABS) {
+      if (i !== at) continue;
+      const peak = (at === 0 ? 0.1 : 0.075) + Math.random() * 0.015;
+      chord.notes.forEach((n, k) => voice(hz(n), t + k * 0.012, STEP * len, peak, keysBus, 0.14, 0.35));
     }
-    if (i === 0 || i === 8 || (i === 14 && Math.random() < 0.5)) {
-      voice(hz(chord.bass), t, STEP * (i === 14 ? 2 : 6), 0.32, master, 0.02);
+
+    // Bass.
+    for (const [at, interval, len] of BASS) {
+      if (i === at) voice(hz(chord.bass + interval), t, STEP * len, 0.3, master, 0.05, 0.12);
     }
-    if (i % 2 === 0 && Math.random() < 0.22) {
-      const n = MELODY[Math.floor(Math.random() * MELODY.length)];
-      voice(hz(n), t, STEP * 3, 0.05, keysBus, 0.25);
+    if (i === 14 && Math.random() < 0.7) {
+      const nextRoot = CHORDS[(bar + 1) % BARS].bass;
+      voice(hz(nextRoot - 1), t, STEP * 1.5, 0.24, master, 0.05, 0.1);
     }
-    if (KICK.has(i)) kick(t);
-    if (SNARE.has(i)) {
-      hit(t, 'bandpass', 1800, 0.28, 0.2);
+
+    // Hook on odd loops; on even loops, a few random notes from it as answers.
+    for (const [b, at, n, len] of HOOK) {
+      if (b !== bar || i !== at) continue;
+      if (loop % 2 === 1 || Math.random() < 0.18) voice(hz(n), t, STEP * len, 0.06, keysBus, 0.3, 0.4);
     }
-    if (i % 2 === 0) hit(t, 'highpass', 7000, i % 4 === 0 ? 0.07 : 0.035 + Math.random() * 0.02, 0.05);
+
+    // Drums.
+    if (KICK[bar % 2].has(i)) kick(t, i === 15 ? 0.6 : 1);
+    if (SNARE.has(i)) snare(t, 0.32);
+    else if (GHOST.has(i) && Math.random() < 0.45) hit(t, 'bandpass', 2100, 0.07, 0.07, 0.8);
+    if (i === 14 && bar % 2 === 1) {
+      hit(t, 'highpass', 6500, 0.05, 0.22); // open hat
+    } else if (i % 2 === 0) {
+      hit(t, 'highpass', 7500, i % 4 === 0 ? 0.08 : 0.05 + Math.random() * 0.02, 0.045);
+    } else if (Math.random() < 0.35) {
+      hit(t, 'highpass', 8500, 0.025, 0.03); // 16th shuffle
+    }
   }
 
   function tick() {
@@ -158,7 +216,8 @@ export function createLofi(ctx: AudioContext) {
     while (next < ctx.currentTime + ahead) {
       schedule(next + (step % 2 ? SWING : 0), step);
       next += STEP;
-      step = (step + 1) % (16 * CHORDS.length);
+      step = (step + 1) % (16 * BARS);
+      if (step === 0) loop++;
     }
   }
 
@@ -170,6 +229,7 @@ export function createLofi(ctx: AudioContext) {
       master.gain.setValueAtTime(master.gain.value, now);
       master.gain.linearRampToValueAtTime(VOLUME, now + 0.5);
       step = 0;
+      loop = 0;
       next = now + 0.03;
       tick();
       timer = window.setInterval(tick, 25);
