@@ -4,6 +4,7 @@
 //      Shape: { "heading": "", "message": "", "videos": [{ "title": "", "url": "" }],
 //               "playlist": { "label": "", "url": "" } }
 //   2. Run: SECRET_PASSWORD=<digits> node scripts/secret-encrypt.mjs
+//      (several accepted passwords: SECRET_PASSWORD="<digits> <digits>")
 //   3. Commit src/data/secret.enc.json (ciphertext only).
 //
 // PBKDF2-SHA256 stretches the password into an AES-256-GCM key. The page
@@ -17,9 +18,13 @@ const source = new URL(process.argv[2] ?? 'secret.local.json', root);
 const target = new URL('src/data/secret.enc.json', root);
 
 // Same rule as the page: only the digits count, so commas and dashes are fine.
-const password = (process.env.SECRET_PASSWORD ?? '').replace(/\D/g, '');
-if (!password) {
-  console.error('Set SECRET_PASSWORD (digits) in the environment.');
+// Several accepted passwords can be given, separated by spaces.
+const passwords = (process.env.SECRET_PASSWORD ?? '')
+  .split(/\s+/)
+  .map((p) => p.replace(/\D/g, ''))
+  .filter(Boolean);
+if (!passwords.length) {
+  console.error('Set SECRET_PASSWORD (digits; separate alternatives with spaces) in the environment.');
   process.exit(1);
 }
 
@@ -30,17 +35,24 @@ if (!Array.isArray(content.videos)) {
 }
 
 const b64 = (bytes) => Buffer.from(bytes).toString('base64');
+const plain = new TextEncoder().encode(JSON.stringify(content));
+// One salt for every password, so the page stretches the typed password once
+// and then tries each entry.
 const salt = crypto.getRandomValues(new Uint8Array(16));
-const iv = crypto.getRandomValues(new Uint8Array(12));
-const material = await crypto.subtle.importKey('raw', new TextEncoder().encode(password), 'PBKDF2', false, ['deriveKey']);
-const key = await crypto.subtle.deriveKey(
-  { name: 'PBKDF2', hash: 'SHA-256', salt, iterations: ITERATIONS },
-  material,
-  { name: 'AES-GCM', length: 256 },
-  false,
-  ['encrypt'],
-);
-const data = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, new TextEncoder().encode(JSON.stringify(content)));
+const entries = [];
+for (const password of passwords) {
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const material = await crypto.subtle.importKey('raw', new TextEncoder().encode(password), 'PBKDF2', false, ['deriveKey']);
+  const key = await crypto.subtle.deriveKey(
+    { name: 'PBKDF2', hash: 'SHA-256', salt, iterations: ITERATIONS },
+    material,
+    { name: 'AES-GCM', length: 256 },
+    false,
+    ['encrypt'],
+  );
+  const data = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, plain);
+  entries.push({ iv: b64(iv), data: b64(new Uint8Array(data)) });
+}
 
-writeFileSync(target, JSON.stringify({ v: 1, iterations: ITERATIONS, salt: b64(salt), iv: b64(iv), data: b64(new Uint8Array(data)) }, null, 2) + '\n');
-console.log(`Encrypted ${content.videos.length} video(s) into src/data/secret.enc.json`);
+writeFileSync(target, JSON.stringify({ v: 2, iterations: ITERATIONS, salt: b64(salt), entries }, null, 2) + '\n');
+console.log(`Encrypted ${content.videos.length} video(s) for ${entries.length} password(s) into src/data/secret.enc.json`);
